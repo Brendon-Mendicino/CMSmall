@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const express = require('express');
+import express from "express";
 
 // init express
 const app = new express();
