@@ -9,6 +9,8 @@ import passport, { strategies } from "passport";
 import { Strategy } from "passport-local";
 import User from "./dao/userDao.js";
 import { KEY_LEN } from "./constants.js";
+import UserSession from "./entities/userSession.js";
+import session from "express-session";
 
 // init express
 const app = express();
@@ -37,7 +39,7 @@ passport.use(
       crypto.scrypt(password, salt, KEY_LEN, (err, derivedKey) => {
         if (err) done(err);
 
-        if (crypto.timingSafeEqual(derivedKey.toString("hex"), user.hash))
+        if (crypto.timingSafeEqual(derivedKey, Buffer.from(user.hash, "hex")))
           done(null, user);
         else done(null, false, { message: "Wrong user or password" });
       });
@@ -46,6 +48,32 @@ passport.use(
     }
   })
 );
+
+passport.serializeUser((user, done) => {
+  done(null, new UserSession(user));
+});
+
+passport.deserializeUser(async (user, done) => {
+  try {
+    // check if user still exist
+    const dbUser = await User.getUser(user.email);
+    if (!dbUser) done(null, false);
+
+    done(null, user);
+  } catch (error) {
+    console.log(error);
+    done(error);
+  }
+});
+
+app.use(
+  session({
+    secret: "Super secret secret :)",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.authenticate("session"));
 
 app.use(router);
 

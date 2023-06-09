@@ -11,7 +11,7 @@
 ## API Server
 
 - GET `/api/pages`
-  - description: get the list of pages, they are returned ordered by `publicationDate`
+  - description: get the list of pages, they are returned ordered by `publicationDate`, non-authenticated user will anly receive "published" pages
   - response body content
   ```json
   [
@@ -144,7 +144,18 @@
   - response status:
     - `200 OK`
     - `400 Bad Request` a page must alway contain at least one header and at least another content
-
+- POST `/api/login`
+  - description: login to receive `sessionId`
+  - request body:
+  ```json
+  { "username": "bre@bre.it", "password": "password" }
+  ```
+  - response body: empty
+  - response status:
+    - `201 Created`
+    - 
+- DELETE `/api/logout`
+  - description: 
 
 ## Database Tables
 
