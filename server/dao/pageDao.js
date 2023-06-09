@@ -12,9 +12,8 @@ Page.getPages = () => {
     const query = "SELECT * FROM pages";
 
     db.all(query, (err, rows) => {
-      if (err) reject(err);
-
-      if (!rows) resolve([]);
+      if (err) return reject(err);
+      if (!rows) return resolve([]);
 
       const pages = rows.map((p) => new PageModel(p));
       resolve(pages);

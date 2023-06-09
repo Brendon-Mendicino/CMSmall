@@ -13,8 +13,8 @@ User.getUser = (email) => {
     const query = "SELECT * FROM users WHERE email = ?";
 
     db.get(query, [email], (err, row) => {
-      if (err) reject(err);
-      if (!row) resolve(null);
+      if (err) return reject(err);
+      if (!row) return resolve(null);
 
       const user = new UserModel(row);
       resolve(user);
@@ -35,7 +35,7 @@ User.insert = (user) => {
       query,
       [user.email, user.name, user.role, user.hash, user.salt],
       (err) => {
-        if (err) reject(err);
+        if (err) return reject(err);
         resolve();
       }
     );

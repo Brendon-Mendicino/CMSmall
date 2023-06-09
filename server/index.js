@@ -5,7 +5,7 @@ import router from "./routes/router.js";
 import morgan from "morgan";
 import cors from "cors";
 import crypto from "crypto";
-import passport, { strategies } from "passport";
+import passport from "passport";
 import { Strategy } from "passport-local";
 import User from "./dao/userDao.js";
 import { KEY_LEN } from "./constants.js";
@@ -33,11 +33,11 @@ passport.use(
     try {
       const user = await User.getUser(username);
 
-      if (!user) done(null, false);
+      if (!user) return done(null, false);
 
       const salt = Buffer.from(user.salt, "hex");
       crypto.scrypt(password, salt, KEY_LEN, (err, derivedKey) => {
-        if (err) done(err);
+        if (err) return done(err);
 
         if (crypto.timingSafeEqual(derivedKey, Buffer.from(user.hash, "hex")))
           done(null, user);
@@ -57,7 +57,7 @@ passport.deserializeUser(async (user, done) => {
   try {
     // check if user still exist
     const dbUser = await User.getUser(user.email);
-    if (!dbUser) done(null, false);
+    if (!dbUser) return done(null, false);
 
     done(null, user);
   } catch (error) {
