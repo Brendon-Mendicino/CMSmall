@@ -17,6 +17,7 @@
   [
     {
       "id": 1,
+      "userId": 1,
       "title": "Why JS is bad.",
       "author": "Brendon",
       "creationDate": "2020-10-01",
@@ -149,6 +150,15 @@
   - request body:
   ```json
   { "username": "bre@bre.it", "password": "password" }
+  ```
+  - response body:
+  ```json
+  {
+    "id": 1,
+    "email": "bre@bre.it",
+    "name": "Brendon",
+    "role": "admin"
+  }
   ```
   - response body: empty
   - response status:

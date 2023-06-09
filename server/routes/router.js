@@ -5,6 +5,7 @@ import crypto from "crypto";
 import UserModel from "../models/userModel.js";
 import passport from "passport";
 import dayjs from "dayjs";
+import UserSession from "../entities/userSession.js";
 
 const router = Router();
 
@@ -51,7 +52,7 @@ router.get("/api/pages", async (req, res) => {
 router.post("/api/login", passport.authenticate("local"), async (req, res) => {
   if (!req.user) return res.status(400).json();
 
-  res.status(201).json();
+  res.status(201).json({ ...req.user });
 });
 
 router.delete("/api/login", async (req, res) => {
