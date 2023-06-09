@@ -45,9 +45,32 @@ API.login = async (username, password) => {
     body: JSON.stringify({ username, password }),
   });
 
-  const body = await res.json();
+  if (!res.ok) {
+    throw Error("Login failed");
+  }
 
+  const body = await res.json();
   return new User(body);
+};
+
+/**
+ *
+ * @param {string} username
+ * @param {string} password
+ * @returns {Promise.<boolean>}
+ */
+API.logout = async () => {
+  const res = await fetch(`${SERVER_URL}/login`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    signal: AbortSignal.timeout(5000),
+  });
+
+  console.log(res.ok);
+  return res.ok;
 };
 
 export default API;

@@ -12,7 +12,7 @@ export default function PageComponent(props) {
     API.getPages().then((p) => {
       setPages(p);
     });
-  }, []);
+  }, [user]);
 
   console.log(user);
 

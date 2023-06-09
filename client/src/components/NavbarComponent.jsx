@@ -1,6 +1,20 @@
-import { Button, Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  Nav,
+  NavDropdown,
+  Navbar,
+  Overlay,
+  Tooltip,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import API from "../API";
+import { useRef, useState } from "react";
 
 export default function NavbarComponent(props) {
+  const { user, setUser } = useAuth();
+
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
@@ -28,17 +42,58 @@ export default function NavbarComponent(props) {
               Link
             </Nav.Link>
           </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+          <div className="d-flex flex-row align-items-center">
+            {user ? (
+              <span>
+                Logged in as <strong>{user.name}</strong>
+              </span>
+            ) : null}
+            {user ? <LogoutButton /> : <LoginButton />}
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>
+  );
+}
+
+function LoginButton({}) {
+  return (
+    <Link to={"/login"} className="btn btn-secondary">
+      Login
+    </Link>
+  );
+}
+
+function LogoutButton() {
+  const target = useRef(null);
+  const [waiting, setWaiting] = useState(false);
+  const [error, setError] = useState(false);
+  const { setUser } = useAuth();
+
+  const logout = async () => {
+    setWaiting(true);
+    setError(false);
+
+    const res = await API.logout();
+
+    setWaiting(false);
+    if (res) setUser();
+    else setError(true);
+  };
+
+  return (
+    <>
+      <Button
+        ref={target}
+        onClick={logout}
+        className="btn-secondary"
+        disabled={waiting}
+      >
+        Logout
+      </Button>
+      <Overlay target={target.current} show={error} placement="bottom">
+        {(props) => <Tooltip {...props}>Could not logout!</Tooltip>}
+      </Overlay>
+    </>
   );
 }
