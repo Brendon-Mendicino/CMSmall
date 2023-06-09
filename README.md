@@ -149,7 +149,7 @@
 ## Database Tables
 
 - Table `users` - represent the registred users
-  | `id` | `email` | `username` | `role` | `hash` | `salt` |
+  | `id` | `email` | `name` | `role` | `hash` | `salt` |
   |-|-|-|-|-|-|
 
 - Table `pages` - represent the pages created by the users
