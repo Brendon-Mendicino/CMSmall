@@ -2,18 +2,23 @@ import { Button, Container, Form, FormGroup } from "react-bootstrap";
 import API from "../API";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginComponent(props) {
   const [waiting, setWaiting] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { user, setUser } = useAuth();
 
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    API.login(username, password).then((v) => navigate("/pages"));
+    API.login(username, password).then((v) => {
+      setUser(v);
+      navigate("/pages");
+    });
   };
 
   return (
