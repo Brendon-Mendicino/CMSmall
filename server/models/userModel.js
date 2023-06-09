@@ -7,14 +7,15 @@
 export default class UserModel {
   /**
    *
-   * @param {number} id
-   * @param {string} email
-   * @param {string} username
-   * @param {USER_ROLE} role
-   * @param {string} hash
-   * @param {string} salt
+   * @param {Object} user
+   * @param {number} user.id
+   * @param {string} user.email
+   * @param {string} user.username
+   * @param {USER_ROLE} user.role
+   * @param {string} user.hash
+   * @param {string} user.salt
    */
-  constructor(id, email, username, role, hash, salt) {
+  constructor({ id, email, username, role, hash, salt }) {
     this.id = id;
     this.email = email;
     this.username = username;

@@ -7,15 +7,16 @@
 export default class PageModel {
   /**
    *
-   * @param {number} id
-   * @param {number} userId
-   * @param {string} title
-   * @param {string} author
-   * @param {string} creationDate
-   * @param {PUBLICATION_STATE} publicationState
-   * @param {string?} publicationDate
+   * @param {Object} page
+   * @param {number} page.id
+   * @param {number} page.userId
+   * @param {string} page.title
+   * @param {string} page.author
+   * @param {string} page.creationDate
+   * @param {PUBLICATION_STATE} page.publicationState
+   * @param {string?} page.publicationDate
    */
-  constructor(
+  constructor({
     id,
     userId,
     title,
@@ -23,7 +24,7 @@ export default class PageModel {
     creationDate,
     publicationState,
     publicationDate
-  ) {
+  }) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -33,3 +34,4 @@ export default class PageModel {
     this.publicationDate = publicationDate;
   }
 }
+
