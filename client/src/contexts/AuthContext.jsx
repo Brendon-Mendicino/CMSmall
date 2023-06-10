@@ -4,7 +4,7 @@ import User from "../models/user";
 import { useState } from "react";
 import API from "../API";
 
-const AuthContext = createContext();
+const AuthContext = createContext({ user: null, setUser: () => {} });
 
 /**
  *

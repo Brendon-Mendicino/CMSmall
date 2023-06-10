@@ -1,5 +1,7 @@
 "use strict";
 
+import { IMG_LIST } from "../utils/imageUtils";
+
 /**
  * @typedef {"header"|"paragraph"|"image"} CONTENT_TYPE
  */
@@ -33,6 +35,8 @@ export class ContentHeader {
     this.header = header;
   }
 }
+
+/** @typedef {ContentHeader|ContentParagraph|ContentImage} InnerContent */
 
 export default class Content {
   /**
@@ -73,5 +77,33 @@ export default class Content {
     }
 
     return new Content({ ...content, content: inner });
+  }
+
+  /**
+   *
+   * @param {CONTENT_TYPE} type
+   * @return {Content}
+   */
+  mapToNewType(type) {
+    switch (type) {
+      case "header":
+        return new Content({
+          ...this,
+          content: { header: this.content[this.contentType] },
+          contentType: type,
+        });
+      case "paragraph":
+        return new Content({
+          ...this,
+          content: { paragraph: this.content[this.contentType] },
+          contentType: type,
+        });
+      case "image":
+        return new Content({
+          ...this,
+          content: { image: IMG_LIST[0] },
+          contentType: type,
+        });
+    }
   }
 }

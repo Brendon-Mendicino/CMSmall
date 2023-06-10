@@ -1,5 +1,6 @@
 const IMG_PATH = "/images";
 
+export const IMG_LIST = ["image1.jpg", "js.png", "pink.jpg"];
 
 /**
  * Returns the absolute path of an image, by

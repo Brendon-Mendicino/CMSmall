@@ -14,6 +14,7 @@ import LoginComponent from "./components/LoginComponent";
 import PageComponent from "./components/PageComponent";
 import AuthProvider from "./contexts/AuthContext";
 import PageContentsComponent from "./components/PageContentsComponent";
+import AddPageComponent from "./components/AddPageComponent";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           >
             <Route path="/login" element={<LoginComponent />} />
             <Route path="/pages" element={<PageComponent />} />
+            <Route path="/pages/add" element={<AddPageComponent />} />
             <Route
               path="/pages/:pageId/contents"
               element={<PageContentsComponent />}
