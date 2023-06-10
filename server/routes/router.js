@@ -6,6 +6,7 @@ import UserModel from "../models/userModel.js";
 import passport from "passport";
 import dayjs from "dayjs";
 import UserSession from "../entities/userSession.js";
+import Content from "../dao/contentDao.js";
 
 const router = Router();
 
@@ -43,6 +44,19 @@ router.get("/api/pages", async (req, res) => {
     });
 
     res.status(200).json(pages);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/api/pages/:pageId/contents", async (req, res) => {
+  try {
+    const isAuth = req.user ? true : false;
+
+    const contents = await Content.getOrdered(req.params.pageId);
+
+    res.status(200).json(contents.map((c) => c.mapToSend()));
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
