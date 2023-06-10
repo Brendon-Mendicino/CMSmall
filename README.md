@@ -21,7 +21,6 @@
       "title": "Why JS is bad.",
       "author": "Brendon",
       "creationDate": "2020-10-01",
-      "publicationState": "published",
       "publicationDate": "2020-10-02"
     },
     ...
@@ -37,7 +36,6 @@
     "title": "Why JS is bad.",
     "author": "Brendon",
     "creationDate": "2020-10-01",
-    "publicationState": "published",
     "publicationDate": "2020-10-02",
     "contents": [
       {
@@ -65,10 +63,10 @@
   - request body
   ```json
   {
+    "userId": 1,
     "title": "Why JS is bad.",
     "author": "Brendon",
     "creationDate": "2020-10-01",
-    "publicationState": "published",
     "publicationDate": "2020-10-02"
   }
   ```
@@ -188,8 +186,8 @@
   |-|-|-|-|-|-|
 
 - Table `pages` - represent the pages created by the users
-  | `id` | `userId` | `title` | `author` | `creationDate` | `publicationState` | `publicationDate` |
-  |-|-|-|-|-|-|-|
+  | `id` | `userId` | `title` | `creationDate` | `publicationDate` |
+  |-|-|-|-|-|
 
 - Table `contents` - represent a single content inside a page
   | `id` | `pageId` | `contentType` | `content` |

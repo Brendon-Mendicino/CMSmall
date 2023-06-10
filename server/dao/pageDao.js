@@ -9,12 +9,16 @@ const Page = {};
  */
 Page.getPages = () => {
   return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM pages";
+    const query =
+      "SELECT p.id, p.userId, u.name AS author, p.creationDate, p.publicationDate " +
+      "FROM pages p, users u " +
+      "WHERE p.userId = u.id";
 
     db.all(query, (err, rows) => {
       if (err) return reject(err);
       if (!rows) return resolve([]);
 
+      console.log(rows);
       const pages = rows.map((p) => new PageModel(p));
       resolve(pages);
     });

@@ -1,9 +1,5 @@
 "use strict";
 
-/**
- * @typedef {"draft"|"scheduled"|"published"} PUBLICATION_STATE
- */
-
 export default class PageModel {
   /**
    *
@@ -13,7 +9,6 @@ export default class PageModel {
    * @param {string} page.title
    * @param {string} page.author
    * @param {string} page.creationDate
-   * @param {PUBLICATION_STATE} page.publicationState
    * @param {string?} page.publicationDate
    */
   constructor({
@@ -22,7 +17,6 @@ export default class PageModel {
     title,
     author,
     creationDate,
-    publicationState,
     publicationDate
   }) {
     this.id = id;
@@ -30,7 +24,6 @@ export default class PageModel {
     this.title = title;
     this.author = author;
     this.creationDate = creationDate;
-    this.publicationState = publicationState;
     this.publicationDate = publicationDate;
   }
 }
