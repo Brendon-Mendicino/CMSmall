@@ -4,35 +4,35 @@
  * @typedef {"header"|"paragraph"|"image"} CONTENT_TYPE
  */
 
-export class ContentParagraph {
-  /**
-   *
-   * @param {string} text
-   */
-  constructor(text) {
-    this.text = text;
-  }
-}
+// export class ContentParagraph {
+//   /**
+//    *
+//    * @param {string} text
+//    */
+//   constructor(text) {
+//     this.text = text;
+//   }
+// }
 
-export class ContentImage {
-  /**
-   *
-   * @param {string} path
-   */
-  constructor(path) {
-    this.path = path;
-  }
-}
+// export class ContentImage {
+//   /**
+//    *
+//    * @param {string} path
+//    */
+//   constructor(path) {
+//     this.path = path;
+//   }
+// }
 
-export class ContentHeader {
-  /**
-   *
-   * @param {string} text
-   */
-  constructor(text) {
-    this.text = text;
-  }
-}
+// export class ContentHeader {
+//   /**
+//    *
+//    * @param {string} text
+//    */
+//   constructor(text) {
+//     this.text = text;
+//   }
+// }
 
 export default class ContentModel {
   /**
@@ -41,7 +41,7 @@ export default class ContentModel {
    * @param {number} content.id
    * @param {number} content.pageId
    * @param {CONTENT_TYPE} content.contentType
-   * @param {ContentHeader|ContentImage|ContentParagraph} content.content
+   * @param {string} content.content
    */
   constructor({ id, pageId, contentType, content }) {
     this.id = id;

@@ -160,10 +160,24 @@
     "role": "admin"
   }
   ```
-  - response body: empty
   - response status:
     - `201 Created`
     - 
+- GET `/api/login`
+  - description: get if the user is logged in
+  - request body: empty
+  - response body:
+  ```json
+  {
+    "id": 1,
+    "email": "bre@bre.it",
+    "name": "Brendon",
+    "role": "admin"
+  }
+  ```
+  - response status:
+    - `200 OK` if logged in already
+    - `401 Unauthorized` if not logged in
 - DELETE `/api/logout`
   - description: 
 

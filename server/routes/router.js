@@ -11,9 +11,9 @@ import Content from "../dao/contentDao.js";
 const router = Router();
 
 const isAuthN = (req, res, next) => {
-  if (req.isAuthenticated()) next();
+  if (req.isAuthenticated()) return next();
 
-  res.status(404).json();
+  res.status(401).json();
 };
 
 router.get("/api/pages", async (req, res) => {
@@ -67,6 +67,10 @@ router.post("/api/login", passport.authenticate("local"), async (req, res) => {
   if (!req.user) return res.status(400).json();
 
   res.status(201).json({ ...req.user });
+});
+
+router.get("/api/login", isAuthN, async (req, res) => {
+  res.status(200).json({ ...req.user });
 });
 
 router.delete("/api/login", async (req, res) => {
