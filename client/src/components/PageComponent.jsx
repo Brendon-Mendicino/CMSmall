@@ -3,6 +3,7 @@ import API from "../API";
 import Page from "../models/page";
 import { Container, Row } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
+import PageListComponent from "./PageListComponent";
 
 export default function PageComponent(props) {
   const [pages, setPages] = useState([]);
@@ -14,15 +15,12 @@ export default function PageComponent(props) {
     });
   }, [user]);
 
-  console.log(user);
+  console.log(pages);
 
   return (
     <>
       <Container>
-        <p>{user?.name}</p>
-        {pages.map((p) => (
-          <Row key={p.id}>{JSON.stringify(p)}</Row>
-        ))}
+        <PageListComponent pages={pages} />
       </Container>
     </>
   );

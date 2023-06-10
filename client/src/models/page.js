@@ -34,11 +34,21 @@ export default class Page {
     this.publicationDate = publicationDate;
   }
 
+  serialize() {
+    return {
+      ...this,
+      creationDate: this.creationDate.format("YYYY-MM-DD"),
+      publicationDate: this.publicationDate?.format("YYYY-MM-DD"),
+    };
+  }
+
   static deserialize(page) {
     return new Page({
       ...page,
       creationDate: dayjs(page.creationDate),
-      publicationDate: page.publicationDate && dayjs(page.publicationDate),
+      publicationDate: page.publicationDate
+        ? dayjs(page.publicationDate)
+        : null,
     });
   }
 }

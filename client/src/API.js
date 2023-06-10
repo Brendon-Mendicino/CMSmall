@@ -1,5 +1,6 @@
 "use strict";
 
+import Content from "./models/content";
 import Page from "./models/page";
 import User from "./models/user";
 
@@ -26,7 +27,24 @@ API.getPages = async () => {
 
   const body = await res.json();
 
-  return body.map((p) => new Page(p));
+  return body.map((p) => Page.deserialize(p));
+};
+
+/**
+ *
+ * @param {number} pageId
+ * @return {Promise.<Content[]>}
+ */
+API.getContents = async (pageId) => {
+  const res = await fetch(`${SERVER_URL}/pages/${pageId}/contents`);
+
+  if (!res.ok) {
+    throw Error("unauthorized");
+  }
+
+  const body = await res.json();
+  console.log(body);
+  return body.map((c) => Content.deserialize(c));
 };
 
 /**
@@ -47,6 +65,27 @@ API.login = async (username, password) => {
 
   if (!res.ok) {
     throw Error("Login failed");
+  }
+
+  const body = await res.json();
+  return new User(body);
+};
+
+/**
+ *
+ * @returns {Promise.<User?>}
+ */
+API.isLoggedIn = async () => {
+  const res = await fetch(`${SERVER_URL}/login`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    return null;
   }
 
   const body = await res.json();

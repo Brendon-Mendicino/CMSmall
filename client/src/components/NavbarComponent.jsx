@@ -45,7 +45,7 @@ export default function NavbarComponent(props) {
           <div className="d-flex flex-row align-items-center">
             {user ? (
               <span>
-                Logged in as <strong>{user.name}</strong>
+                You are logged in as <strong>{user.name}</strong>
               </span>
             ) : null}
             {user ? <LogoutButton /> : <LoginButton />}
