@@ -40,7 +40,12 @@ function PageItem({ page }) {
           to additional content. This content is a little bit longer.
         </Card.Text>
         <div className="d-flex justify-content-end">
-          <Link to={`/pages/${page.id}/contents`}>Go to page</Link>
+          <Link
+            to={`/pages/${page.id}/contents`}
+            state={{ page: page.serialize() }}
+          >
+            Go to page
+          </Link>
         </div>
       </Card.Body>
       <Card.Footer className="text-muted">

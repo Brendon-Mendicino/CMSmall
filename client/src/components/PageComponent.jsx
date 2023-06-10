@@ -15,8 +15,6 @@ export default function PageComponent(props) {
     });
   }, [user]);
 
-  console.log(pages);
-
   return (
     <>
       <Container>

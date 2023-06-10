@@ -1,4 +1,5 @@
-const IMG_PATH = "/src/assets/images";
+const IMG_PATH = "/public/images";
+
 
 /**
  * Returns the absolute path of an image, by
