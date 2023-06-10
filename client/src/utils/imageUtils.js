@@ -1,4 +1,4 @@
-const IMG_PATH = "/public/images";
+const IMG_PATH = "/images";
 
 
 /**

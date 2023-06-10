@@ -26,7 +26,7 @@ API.getPages = async () => {
   }
 
   const body = await res.json();
-
+  console.log(body.map(p => Page.deserialize(p)))
   return body.map((p) => Page.deserialize(p));
 };
 
@@ -43,7 +43,6 @@ API.getContents = async (pageId) => {
   }
 
   const body = await res.json();
-  console.log(body);
   return body.map((c) => Content.deserialize(c));
 };
 

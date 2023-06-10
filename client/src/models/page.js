@@ -42,10 +42,26 @@ export default class Page {
     };
   }
 
+  /**
+   * @param {string?} publicationDate
+   * @returns {PUBLICATION_STATE}
+   */
+  static getState(publicationDate) {
+    if (!publicationDate) return "draft";
+
+    if (dayjs().isBefore(dayjs(publicationDate))) return "scheduled";
+
+    return "published";
+  }
+
   static deserialize(page) {
+    const publicationState =
+      page.publicationState ?? Page.getState(page.publicationDate);
+
     return new Page({
       ...page,
       creationDate: dayjs(page.creationDate),
+      publicationState: publicationState,
       publicationDate: page.publicationDate
         ? dayjs(page.publicationDate)
         : null,
