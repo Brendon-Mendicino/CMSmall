@@ -26,6 +26,7 @@ export default function NavbarComponent(props) {
         <Navbar.Brand as="div">
           <Link to={"/pages"} className="navbar-brand">
             {webpageName}
+            {"™"}
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
@@ -41,8 +42,8 @@ export default function NavbarComponent(props) {
           </Nav>
           <div className="d-flex flex-row align-items-center">
             {user ? (
-              <span>
-                You are logged in as <strong>{user.name}</strong>
+              <span style={{ marginInlineEnd: "1rem" }}>
+                Logged in as <strong>{user.name}</strong>
               </span>
             ) : null}
             {user ? <LogoutButton /> : <LoginButton />}

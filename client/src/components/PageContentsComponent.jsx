@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import API from "../API";
 import {
+  Alert,
   Badge,
   Card,
   Container,
@@ -10,27 +11,48 @@ import {
   Row,
 } from "react-bootstrap";
 import { ContentListComponent } from "./ContentListComponent";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Page from "../models/page";
 import PageStateBadge from "./PageStateBadge";
+import DeletePageButton from "./DeletePageButton";
 
 export default function PageContentsComponent({}) {
+  const [waiting, setWaiting] = useState(true);
+  const [error, setError] = useState(false);
   const [contents, setContents] = useState([]);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
   const page = Page.deserialize(location.state.page);
 
   console.log(page);
   useEffect(() => {
-    API.getContents(page.id).then((c) => {
-      setContents(c);
-    });
+    setWaiting(true);
+    setError(false);
+
+    API.getContents(page.id)
+      .then((c) => {
+        setContents(c);
+      })
+      .catch((err) => {
+        setError(true);
+      })
+      .finally(() => {
+        setWaiting(false);
+      });
   }, [user]);
 
   return (
     <>
       <Container>
+        {waiting ? (
+          <Alert variant="secondary">Waiting for server response...</Alert>
+        ) : null}
+        {error ? (
+          <Alert variant="danger">There was an unexpected error.</Alert>
+        ) : null}
         <PageInfoComponent page={page} />
+        <DeletePageButton page={page} onSuccess={() => navigate(-1)} />
         <ContentListComponent contents={contents} />
       </Container>
     </>

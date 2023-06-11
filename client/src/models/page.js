@@ -79,6 +79,6 @@ export default class Page {
       ...ser,
       id: undefined,
       publicationState: undefined,
-    }
+    };
   }
 }

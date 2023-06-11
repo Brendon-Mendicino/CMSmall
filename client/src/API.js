@@ -33,7 +33,7 @@ API.getPages = async () => {
 /**
  * @param {Page} page
  * @param {Content[]} contents
- * @return {boolean}
+ * @return {Promise.<boolean>}
  */
 API.createPage = async (page, contents) => {
   const res = await fetch(`${SERVER_URL}/pages`, {
@@ -52,12 +52,34 @@ API.createPage = async (page, contents) => {
 };
 
 /**
+ * @param {number} pageId
+ * @return {Promise.<boolean>}
+ */
+API.deletePage = async (pageId) => {
+  const res = await fetch(`${SERVER_URL}/pages/${pageId}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res.ok;
+};
+
+/**
  *
  * @param {number} pageId
  * @return {Promise.<Content[]>}
  */
 API.getContents = async (pageId) => {
-  const res = await fetch(`${SERVER_URL}/pages/${pageId}/contents`);
+  const res = await fetch(`${SERVER_URL}/pages/${pageId}/contents`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!res.ok) {
     throw Error("unauthorized");
@@ -134,7 +156,13 @@ API.logout = async () => {
 
 /** @returns {string} */
 API.getPageName = async () => {
-  const res = await fetch(`${SERVER_URL}/webpage/name`);
+  const res = await fetch(`${SERVER_URL}/webpage/name`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
   if (!res.ok) throw Error();
 
   const { name } = await res.json();

@@ -17,10 +17,10 @@ import {
 } from "react-bootstrap";
 import Content from "../models/content";
 import { IMG_LIST, imagePath } from "../utils/imageUtils";
-import { IconDelete, IconDownArrow, IconUpArrow } from "../assets/icons";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
 import Page from "../models/page";
+import { DeleteButton, DownButton, UpButton } from "./ButtonComponent";
 
 /** @typedef {} */
 
@@ -291,11 +291,15 @@ export default function AddPageComponent() {
             <Button onClick={addContent}>Add content</Button>
           </PageContentComponent>
           <Form.Group className="d-flex justify-content-end page-form-btn-container">
-            <Button className="btn-warning" onClick={handleClose}>
+            <Button
+              className="btn-warning"
+              onClick={handleClose}
+              disabled={waiting}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="btn-primary">
-              Submit
+            <Button type="submit" className="btn-primary" disabled={waiting}>
+              Submit {waiting ? <Spinner size="sm" /> : null}
             </Button>
           </Form.Group>
         </Form>
@@ -368,30 +372,6 @@ function ContentFormItem({
       </Form.Select>
       {chooseContentType(content.contentType)({ content, setInnerContent })}
     </>
-  );
-}
-
-function DeleteButton({ onClick }) {
-  return (
-    <Button variant="outline-danger" onClick={onClick}>
-      <IconDelete />
-    </Button>
-  );
-}
-
-function UpButton({ onClick }) {
-  return (
-    <Button variant="outline-secondary" onClick={onClick}>
-      <IconUpArrow />
-    </Button>
-  );
-}
-
-function DownButton({ onClick }) {
-  return (
-    <Button variant="outline-secondary" onClick={onClick}>
-      <IconDownArrow />
-    </Button>
   );
 }
 
