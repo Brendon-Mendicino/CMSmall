@@ -1,6 +1,8 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/8AapHqUJ)
+
 # Exam #N: "Exam Title"
-## Student: s317639 MENDICINO BRENDON 
+
+## Student: s317639 MENDICINO BRENDON
 
 ## React Client Application Routes
 
@@ -33,6 +35,7 @@
   - request body
   ```json
   {
+    "userId": 1,
     "title": "Why JS is bad.",
     "author": "Brendon",
     "creationDate": "2020-10-01",
@@ -46,8 +49,9 @@
     ]
   }
   ```
+  - repsonse body: empty
   - response status:
-    - `200 OK`
+    - `201 Created`
     - `400 Bad Request` a page must alway contain at least one header and at least another content
     - `401 Unauthorized` unauthenticated user
     - `500 Internal Server Error`
@@ -112,9 +116,7 @@
   - description: update the order of a page contets
   - request body: contains on ordered list of `contentId`
   ```json
-  [
-    3, 1, 2, 5, 4
-  ]
+  [3, 1, 2, 5, 4]
   ```
   - response status:
     - `200 OK`
@@ -160,7 +162,7 @@
   ```
   - response status:
     - `201 Created`
-    - 
+    -
 - GET `/api/login`
   - description: get if the user is logged in
   - request body: empty
@@ -177,7 +179,7 @@
     - `200 OK` if logged in already
     - `401 Unauthorized` if not logged in
 - DELETE `/api/logout`
-  - description: 
+  - description:
 
 ## Database Tables
 

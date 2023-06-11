@@ -25,4 +25,26 @@ Page.getPages = () => {
   });
 };
 
+/**
+ *
+ * @param {PageModel} page
+ * @param {Promise.<number>} pageId
+ */
+Page.insertPage = (page) => {
+  return new Promise((resolve, reject) => {
+    const query =
+      "INSERT INTO pages (userId, title, creationDate, publicationDate) " +
+      "VALUES (?,?,?,?)";
+
+    db.run(
+      query,
+      [page.userId, page.title, page.creationDate, page.publicationDate],
+      function (err) {
+        if (err) reject(err);
+        else resolve(this.lastID);
+      }
+    );
+  });
+};
+
 export default Page;

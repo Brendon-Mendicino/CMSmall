@@ -1,16 +1,13 @@
 import { Router } from "express";
 import Page from "../dao/pageDao.js";
-import User from "../dao/userDao.js";
-import crypto from "crypto";
-import UserModel from "../models/userModel.js";
 import passport from "passport";
 import dayjs from "dayjs";
-import UserSession from "../entities/userSession.js";
 import Content from "../dao/contentDao.js";
+import pageValidation from "../validations/pageValidation.js";
 
 const router = Router();
 
-const isAuthN = (req, res, next) => {
+const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
 
   res.status(401).json();
@@ -18,22 +15,11 @@ const isAuthN = (req, res, next) => {
 
 router.get("/api/pages", async (req, res) => {
   try {
-    const isAuth = req.user ? true : false;
-
     let pages = await Page.getPages();
 
-    if (!isAuth) {
-      pages = pages.filter((p) => {
-        if (p.publicationState === "published") return true;
-
-        // if (p.publicationState === "scheduled")
-        //   return (
-        //     now.isBefore(dayjs(p.publicationDate), "date") ||
-        //     now.isSame(dayjs(p.publicationDate), "date")
-        //   );
-
-        return false;
-      });
+    if (!req.isAuthenticated()) {
+      const now = dayjs();
+      pages = pages.filter((p) => now.isAfter(dayjs(p.publicationDate)));
     }
 
     // sort pages by publication date
@@ -47,6 +33,27 @@ router.get("/api/pages", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.put("/api/pages", isAuthenticated, async (req, res) => {
+  try {
+    const { ok, page, contents } = await pageValidation(req.body);
+    if (!ok) {
+      return res.status(400).json({ error: "Invalid page" });
+    }
+
+    // Insert the server-handled fields
+    page.userId = req.user.id;
+    page.creationDate = dayjs().format("YYYY-MM-DD");
+
+    const pageId = await Page.insertPage(page);
+    await Content.insert(pageId, contents);
+
+    res.status(201).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
   }
 });
 
@@ -69,7 +76,7 @@ router.post("/api/login", passport.authenticate("local"), async (req, res) => {
   res.status(201).json({ ...req.user });
 });
 
-router.get("/api/login", isAuthN, async (req, res) => {
+router.get("/api/login", isAuthenticated, async (req, res) => {
   res.status(200).json({ ...req.user });
 });
 

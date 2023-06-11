@@ -27,4 +27,55 @@ Content.getOrdered = (pageId) => {
   });
 };
 
+/**
+ *
+ * @param {number} pageId
+ * @param {ContentModel[]} contents
+ */
+Content.insert = async (pageId, contents) => {
+  const promises = contents.map((content, index) => {
+    return (async () => {
+      const contentId = await new Promise((resolve, reject) => {
+        const queryContent =
+          "INSERT INTO contents (pageId, contentType, content) VALUES (?,?,?)";
+
+        db.run(
+          queryContent,
+          [pageId, content.contentType, content.content],
+          function (err) {
+            if (err) reject(err);
+            else resolve(this.lastID);
+          }
+        );
+      });
+
+      return new Promise((resolve, reject) => {
+        const queryOrder =
+          "INSERT INTO page_content ('order', pageId, contentId) VALUES (?,?,?)";
+
+        db.run(queryOrder, [index, pageId, contentId], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    })();
+  });
+
+  return Promise.all(promises);
+
+  // const orderPromises = contents.map((content, index) => {
+  //   return new Promise((resolve, reject) => {
+  //     const queryOrder =
+  //       "INSERT INTO page_content (order, pageId, contentId) VALUES (?,?,?)";
+
+  //     db.run(queryOrder, [index, pageId, content.id], (err) => {
+  //       if (err) reject(err);
+  //       else resolve();
+  //     });
+  //   });
+  // });
+
+  // return Promise.all(orderPromises);
+};
+
 export default Content;
