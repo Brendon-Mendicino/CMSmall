@@ -205,6 +205,21 @@
     - `400 Bad Request` wrong format
     - `401 Unauthorized`
     - `500 Internal Server Error`
+- PUT `/api/register`
+  - description: register new user (just for testing)
+  - request body:
+  ```json
+  {
+    "name": "Brendon",
+    "role": "admin",
+    "email": "s123456@studenti.polito.it",
+    "password": "123456789"
+  }
+  ```
+  - response body: empty
+  - response status:
+    - `204 No Content`
+    - `500 Internal Server Error`
 
 ## Database Tables
 
@@ -242,5 +257,7 @@
 
 ## Users Credentials
 
-- username, password (plus any other requested info)
-- username, password (plus any other requested info)
+- `bre@bre.it`, `test` (Normal user)
+- `test@test.it`, `test` (Normal user)
+- `s@polito.it`, `poli` (Admin user)
+- `boh@boh.xyz`, `supersecret` (Admin user)

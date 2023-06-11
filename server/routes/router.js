@@ -8,6 +8,10 @@ import pageValidation from "../validations/pageValidation.js";
 import Webpage from "../dao/webpageDao.js";
 import ContentModel from "../models/contentModel.js";
 import PageModel from "../models/pageModel.js";
+import User from "../dao/userDao.js";
+import crypto from "crypto";
+import { KEY_LEN, SALT_LEN } from "../constants.js";
+import UserModel from "../models/userModel.js";
 
 const router = Router();
 
@@ -133,6 +137,40 @@ router.delete("/api/login", async (req, res) => {
 
     return res.status(200).json();
   });
+});
+
+router.put("/api/register", async (req, res) => {
+  try {
+    const schema = yup.object({
+      email: yup.string().required(),
+      name: yup.string().required(),
+      role: yup.string().required(),
+      password: yup.string().required(),
+    });
+    const { email, name, password, role } = await schema.validate(req.body);
+
+    const salt = crypto.randomBytes(SALT_LEN);
+    const hash = await new Promise((resolve, reject) => {
+      crypto.scrypt(password, salt, KEY_LEN, async (err, derivedKey) => {
+        if (err) reject(err);
+        resolve(derivedKey);
+      });
+    });
+
+    const user = new UserModel({
+      email,
+      name,
+      role,
+      hash: hash.toString("hex"),
+      salt: salt.toString("hex"),
+    });
+    await User.insert(user);
+
+    res.status(204).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
 });
 
 router.get("/api/webpage/name", async (req, res) => {
