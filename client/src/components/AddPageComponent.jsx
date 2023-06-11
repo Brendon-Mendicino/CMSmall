@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
 import {
+  Alert,
   Button,
   Card,
   Container,
@@ -17,6 +18,9 @@ import {
 import Content from "../models/content";
 import { IMG_LIST, imagePath } from "../utils/imageUtils";
 import { IconDelete, IconDownArrow, IconUpArrow } from "../assets/icons";
+import { useNavigate } from "react-router-dom";
+import API from "../API";
+import Page from "../models/page";
 
 /** @typedef {} */
 
@@ -38,13 +42,16 @@ const defaultContents = [
   }),
 ];
 
-const defaultContent = new Content({
-  id: 2,
-  contentType: "paragraph",
-  content: { paragraph: "Header section" },
-});
+const defaultContent = (id) =>
+  new Content({
+    id: id,
+    contentType: "paragraph",
+    content: { paragraph: "Header section" },
+  });
 
 export default function AddPageComponent() {
+  const [waiting, setWaiting] = useState(false);
+  const [error, setError] = useState(false);
   const [title, setTitle] = useState("");
   const [creationDate, setCreationDate] = useState(
     dayjs().format("YYYY-MM-DD")
@@ -53,6 +60,7 @@ export default function AddPageComponent() {
   const [contents, setContents] = useState(defaultContents);
   const [headerWarning, setHeaderWarning] = useState(false);
   const [contentWarning, setContentWarning] = useState(false);
+  const navigate = useNavigate();
 
   const { user } = useAuth();
 
@@ -149,11 +157,51 @@ export default function AddPageComponent() {
   };
 
   const addContent = () => {
-    setContents((c) => [...c, defaultContent]);
+    setContents((c) => {
+      const id = c
+        .map((c) => c.id)
+        .reduce((pre, curr) => (curr > pre ? curr : pre), 0);
+      return [...c, defaultContent(id + 1)];
+    });
+  };
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setWaiting(true);
+    setError(false);
+
+    API.createPage(
+      Page.deserialize({
+        id: 0,
+        userId: user.id,
+        author: user.name,
+        title: title,
+        creationDate: creationDate,
+        publicationDate: publicationDate,
+      }),
+      contents
+    )
+      .then((value) => {
+        if (!value) setError(true);
+        else handleClose();
+      })
+      .finally(() => {
+        setWaiting(false);
+      });
   };
 
   return (
     <Container>
+      {waiting ? (
+        <Alert variant="secondary">Wating for server response...</Alert>
+      ) : null}
+      {error ? (
+        <Alert variant="danger">The server could not handle the request.</Alert>
+      ) : null}
       {/* Toast to show error messagges */}
       <ToastContainer
         className="p-3"
@@ -186,7 +234,7 @@ export default function AddPageComponent() {
 
       {/* Actual FORM implementation */}
       {user ? (
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <PageInfoComponent>
             <Form.Group>
               <Form.Label>Author</Form.Label>
@@ -221,7 +269,6 @@ export default function AddPageComponent() {
                 type="date"
                 value={publicationDate}
                 onChange={(e) => setPublicationDate(e.target.value)}
-                required
               />
             </Form.Group>
           </PageInfoComponent>
@@ -231,6 +278,7 @@ export default function AddPageComponent() {
                 <ContentFormItem
                   content={c}
                   index={index}
+                  lastIndex={contents.length - 1}
                   setContentType={setContentType}
                   setInnerContent={setInnerContent}
                   deleteContent={deleteContent}
@@ -242,9 +290,19 @@ export default function AddPageComponent() {
             ))}
             <Button onClick={addContent}>Add content</Button>
           </PageContentComponent>
+          <Form.Group className="d-flex justify-content-end page-form-btn-container">
+            <Button className="btn-warning" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button type="submit" className="btn-primary">
+              Submit
+            </Button>
+          </Form.Group>
         </Form>
       ) : (
-        <Spinner />
+        <Alert variant="warning">
+          You need to be authenticated to access this page.
+        </Alert>
       )}
     </Container>
   );
@@ -254,9 +312,7 @@ function PageInfoComponent({ children }) {
   return (
     <Card className="page-container">
       <Card.Header>Page info section</Card.Header>
-      <Card.Body>
-        <Card.Text>{children}</Card.Text>
-      </Card.Body>
+      <Card.Body>{children}</Card.Body>
     </Card>
   );
 }
@@ -265,9 +321,7 @@ function PageContentComponent({ children }) {
   return (
     <Card className="page-container">
       <Card.Header>Page contents section</Card.Header>
-      <Card.Body>
-        <Card.Text>{children}</Card.Text>
-      </Card.Body>
+      <Card.Body>{children}</Card.Body>
     </Card>
   );
 }
@@ -277,6 +331,7 @@ function PageContentComponent({ children }) {
  * @param {Object} props
  * @param {Content} props.content
  * @param {number} props.index
+ * @param {number} props.lastIndex
  * @param {(type:import("../models/content").CONTENT_TYPE, content:Content) => void} props.setContentType
  * @param {(type:import("../models/content").InnerContent, content:Content)} props.setInnerContent
  * @param {(content:Content)} props.deleteContent
@@ -286,6 +341,7 @@ function PageContentComponent({ children }) {
 function ContentFormItem({
   content,
   index,
+  lastIndex,
   setContentType,
   setInnerContent,
   deleteContent,
@@ -296,10 +352,13 @@ function ContentFormItem({
     <>
       <Form.Label>{`Content N. ${index}`}</Form.Label>
       <DeleteButton onClick={() => deleteContent(content)} />
-      <UpButton onClick={() => moveUp(content)} />
-      <DownButton onClick={() => moveDown(content)} />
+      {index !== 0 ? <UpButton onClick={() => moveUp(content)} /> : null}
+      {index !== lastIndex ? (
+        <DownButton onClick={() => moveDown(content)} />
+      ) : null}
       <Form.Select
         size="sm"
+        className="bg-secondary bg-opacity-10"
         value={content.contentType}
         onChange={(e) => setContentType(e.target.value, content)}
       >

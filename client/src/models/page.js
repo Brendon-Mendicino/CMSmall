@@ -4,6 +4,8 @@ import dayjs from "dayjs";
  * @typedef {"draft"|"scheduled"|"published"} PUBLICATION_STATE
  */
 
+/** @typedef {{id:number, userId:number, title:string, author:string, creationDate:string, publicationSate:string, publicationDate:string}} PageSer */
+
 export default class Page {
   /**
    *
@@ -34,6 +36,9 @@ export default class Page {
     this.publicationDate = publicationDate;
   }
 
+  /**
+   * @returns {PageSer}
+   */
   serialize() {
     return {
       ...this,
@@ -66,5 +71,14 @@ export default class Page {
         ? dayjs(page.publicationDate)
         : null,
     });
+  }
+
+  mapToModel() {
+    const ser = this.serialize();
+    return {
+      ...ser,
+      id: undefined,
+      publicationState: undefined,
+    }
   }
 }

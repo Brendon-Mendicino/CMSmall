@@ -9,3 +9,7 @@
 .page-container button {
     margin: 0.3rem;
 }
+
+.page-form-btn-container > * {
+    margin: 1rem;
+}

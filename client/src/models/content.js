@@ -106,4 +106,12 @@ export default class Content {
         });
     }
   }
+
+  /** @returns {{contentType:CONTENT_TYPE, content:string}} */
+  mapToModel() {
+    return {
+      contentType: this.contentType,
+      content: this.content[this.contentType],
+    };
+  }
 }

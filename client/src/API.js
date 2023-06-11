@@ -26,8 +26,29 @@ API.getPages = async () => {
   }
 
   const body = await res.json();
-  console.log(body.map(p => Page.deserialize(p)))
+  console.log(body.map((p) => Page.deserialize(p)));
   return body.map((p) => Page.deserialize(p));
+};
+
+/**
+ * @param {Page} page
+ * @param {Content[]} contents
+ * @return {boolean}
+ */
+API.createPage = async (page, contents) => {
+  const res = await fetch(`${SERVER_URL}/pages`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...page.mapToModel(),
+      contents: contents.map((c) => c.mapToModel()),
+    }),
+  });
+
+  return res.ok;
 };
 
 /**
