@@ -1,3 +1,11 @@
 .tooltip-inner, .img-tooltip {
     max-width: none;
 }
+
+.page-container {
+    margin: 2rem;
+}
+
+.page-container button {
+    margin: 0.3rem;
+}
