@@ -132,4 +132,33 @@ API.logout = async () => {
   return res.ok;
 };
 
+/** @returns {string} */
+API.getPageName = async () => {
+  const res = await fetch(`${SERVER_URL}/webpage/name`);
+  if (!res.ok) throw Error();
+
+  const { name } = await res.json();
+  return name;
+};
+
+/**
+ *
+ * @param {string} name
+ * @returns {Promise.<boolean>}
+ */
+API.setPageName = async (name) => {
+  const res = await fetch(`${SERVER_URL}/webpage/name`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!res.ok) return false;
+
+  return true;
+};
+
 export default API;

@@ -10,17 +10,22 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import API from "../API";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function NavbarComponent(props) {
+  const [webpageName, setWebpageName] = useState("");
   const { user, setUser } = useAuth();
+
+  useEffect(() => {
+    API.getPageName().then((name) => setWebpageName(name));
+  }, [user]);
 
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
         <Navbar.Brand as="div">
           <Link to={"/pages"} className="navbar-brand">
-            Navbar Brand
+            {webpageName}
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
@@ -30,21 +35,9 @@ export default function NavbarComponent(props) {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
-            <Link to={"/pages/add"} className="nav-link">New page</Link>
-            <Nav.Link href="#action2">Link</Nav.Link>
-            <NavDropdown title="Link" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown>
-            <Nav.Link href="#" disabled>
-              Link
-            </Nav.Link>
+            <Link to={"/pages/add"} className="nav-link">
+              New page
+            </Link>
           </Nav>
           <div className="d-flex flex-row align-items-center">
             {user ? (
