@@ -11,6 +11,7 @@ import User from "./dao/userDao.js";
 import { KEY_LEN } from "./constants.js";
 import UserSession from "./entities/userSession.js";
 import session from "express-session";
+import http from "http";
 
 // init express
 const app = express();
@@ -81,3 +82,4 @@ app.use(router);
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+// http.createServer(app).listen(port, "192.168.138.36");

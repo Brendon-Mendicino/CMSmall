@@ -56,9 +56,11 @@
     - `401 Unauthorized` unauthenticated user
     - `500 Internal Server Error`
 - DELETE `/api/pages/:pageId`
-  - description: delete a page, only the owner of the page or an admin can perform this action
+  - description: delete a page and all his contents, only the owner of the page or an admin can perform this action
+  - request body: empty
+  - response body: empty
   - response status:
-    - `200 OK`
+    - `204 OK`
     - `401 Unauthorized` wasn't owner of the page nor an admin
     - `404 Not Found` page not found
     - `500 Internal Server Error`
@@ -176,8 +178,9 @@
   }
   ```
   - response status:
-    - `200 OK` if logged in already
-    - `401 Unauthorized` if not logged in
+    - `200 OK`: **if authenticated**
+    - `404 Not Found`: **if not authenticated**
+    - `500 Server Interal Error`
 - DELETE `/api/logout`
   - description:
 - GET `/api/webpage/name`

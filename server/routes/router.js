@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import Content from "../dao/contentDao.js";
 import pageValidation from "../validations/pageValidation.js";
 import Webpage from "../dao/webpageDao.js";
+import ContentModel from "../models/contentModel.js";
+import PageModel from "../models/pageModel.js";
 
 const router = Router();
 
@@ -44,6 +46,30 @@ router.get("/api/pages", async (req, res) => {
   }
 });
 
+router.delete("/api/pages/:pageId", isAuthenticated, async (req, res) => {
+  try {
+    const schema = yup.number().required();
+    const pageId = await schema.validate(req.params.pageId);
+
+    const page = await Page.get(pageId);
+
+    // Only admin can delete someone else page
+    if (page?.userId !== req.user?.id && req.user?.role !== "admin") {
+      return res.status(401).json();
+    }
+
+    const deleted = await Page.delete(pageId);
+    if (!deleted) {
+      return res.status(404).json();
+    }
+
+    res.status(204).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
 router.put("/api/pages", isAuthenticated, async (req, res) => {
   try {
     const { ok, page, contents } = await pageValidation(req.body);
@@ -67,9 +93,21 @@ router.put("/api/pages", isAuthenticated, async (req, res) => {
 
 router.get("/api/pages/:pageId/contents", async (req, res) => {
   try {
-    const isAuth = req.user ? true : false;
+    const schema = yup.number().required();
+    const pageId = await schema.validate(req.params.pageId);
 
-    const contents = await Content.getOrdered(req.params.pageId);
+    const [contents, page] = await Promise.all([
+      Content.getOrdered(pageId),
+      Page.get(pageId),
+    ]);
+
+    console.log(req.isAuthenticated());
+    if (
+      !req.isAuthenticated() &&
+      !dayjs().isAfter(dayjs(page.publicationDate))
+    ) {
+      return res.status(401).json();
+    }
 
     res.status(200).json(contents.map((c) => c.mapToSend()));
   } catch (error) {
@@ -84,8 +122,9 @@ router.post("/api/login", passport.authenticate("local"), async (req, res) => {
   res.status(201).json({ ...req.user });
 });
 
-router.get("/api/login", isAuthenticated, async (req, res) => {
-  res.status(200).json({ ...req.user });
+router.get("/api/login", async (req, res) => {
+  if (req.isAuthenticated()) res.status(200).json({ ...req.user });
+  else res.status(404).json();
 });
 
 router.delete("/api/login", async (req, res) => {

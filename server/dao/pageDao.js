@@ -18,9 +18,45 @@ Page.getPages = () => {
       if (err) return reject(err);
       if (!rows) return resolve([]);
 
-      console.log(rows);
       const pages = rows.map((p) => new PageModel(p));
       resolve(pages);
+    });
+  });
+};
+
+/**
+ *
+ * @param {number} pageId
+ * @returns {Promise.<PageModel?>}
+ */
+Page.get = (pageId) => {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT * FROM pages WHERE id = ?";
+
+    db.get(query, [pageId], (err, row) => {
+      if (err) return reject();
+      if (!row) return resolve(null);
+
+      const page = new PageModel(row);
+      resolve(page);
+    });
+  });
+};
+
+/**
+ *
+ * @param {number} pageId
+ * @returns {Promise.<boolean>}
+ */
+Page.delete = (pageId) => {
+  return new Promise((resolve, reject) => {
+    const query = "DELETE FROM pages WHERE id = ?";
+
+    db.run(query, [pageId], function (err) {
+      if (err) return reject(err);
+
+      const found = this.changes !== 0;
+      resolve(found);
     });
   });
 };
