@@ -2,6 +2,8 @@ import { Card, Col, Row } from "react-bootstrap";
 import Page from "../models/page";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import PageStateBadge from "./PageStateBadge";
 
 /**
  *
@@ -28,6 +30,8 @@ export default function PageListComponent({ pages }) {
  * @returns
  */
 function PageItem({ page }) {
+  const { user } = useAuth();
+
   return (
     <Card>
       <Card.Header>
@@ -35,10 +39,6 @@ function PageItem({ page }) {
       </Card.Header>
       <Card.Body>
         <Card.Title>{page.title}</Card.Title>
-        <Card.Text>
-          This is a longer card with supporting text below as a natural lead-in
-          to additional content. This content is a little bit longer.
-        </Card.Text>
         <div className="d-flex justify-content-end">
           <Link
             to={`/pages/${page.id}/contents`}
@@ -49,7 +49,11 @@ function PageItem({ page }) {
         </div>
       </Card.Body>
       <Card.Footer className="text-muted">
-        Published on: {page.publicationDate?.format("DD MMM YYYY")}
+        Published on:{" "}
+        <strong>
+          {page.publicationDate?.format("DD MMM YYYY") ?? "Unpublished"}
+        </strong>{" "}
+        {user ? <PageStateBadge page={page} /> : null}
       </Card.Footer>
     </Card>
   );
