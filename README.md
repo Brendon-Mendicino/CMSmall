@@ -180,6 +180,28 @@
     - `401 Unauthorized` if not logged in
 - DELETE `/api/logout`
   - description:
+- GET `/api/webpage/name`
+  - description: get the name of the webpage
+  - request body: empty
+  - response body:
+  ```json
+  { "name": "Sito WebApp" }
+  ```
+  - response status:
+    - `200 OK`
+    - `500 Interal Server Error`
+- POST `/api/webpage/name`
+  - desription: update the name of the webpage, only Admins can access this route
+  - request body:
+  ```json
+  { "name": "Sito WebApp" }
+  ```
+  - response body: empty
+  - response status:
+    - `201 Created`
+    - `400 Bad Request` wrong format
+    - `401 Unauthorized`
+    - `500 Internal Server Error`
 
 ## Database Tables
 
@@ -198,6 +220,10 @@
 - Table `page_content` - represent the page ownership of contents and their order
   | `order` | `pageId` | `contentId` |
   |-|-|-|
+
+- Table `webpage` - contains the name of the page
+  | `name` |
+  |-|
 
 ## Main React Components
 

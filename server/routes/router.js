@@ -1,14 +1,22 @@
+import * as yup from "yup";
 import { Router } from "express";
 import Page from "../dao/pageDao.js";
 import passport from "passport";
 import dayjs from "dayjs";
 import Content from "../dao/contentDao.js";
 import pageValidation from "../validations/pageValidation.js";
+import Webpage from "../dao/webpageDao.js";
 
 const router = Router();
 
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next();
+
+  res.status(401).json();
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === "admin") return next();
 
   res.status(401).json();
 };
@@ -86,6 +94,29 @@ router.delete("/api/login", async (req, res) => {
 
     return res.status(200).json();
   });
+});
+
+router.get("/api/webpage/name", async (req, res) => {
+  try {
+    const name = await Webpage.getName();
+    res.status(200).json({ name });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
+router.post("/api/webpage/name", isAdmin, async (req, res) => {
+  try {
+    const schema = yup.object({ name: yup.string().required() });
+    const name = await schema.validate(req.body);
+
+    await Webpage.setName(name);
+    res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
 });
 
 export default router;
