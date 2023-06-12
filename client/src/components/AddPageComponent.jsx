@@ -33,7 +33,7 @@ const defaultContents = [
   new Content({
     id: 2,
     contentType: "paragraph",
-    content: { paragraph: "Header section" },
+    content: { paragraph: "Paragraph section" },
   }),
   new Content({
     id: 3,
@@ -46,7 +46,7 @@ const defaultContent = (id) =>
   new Content({
     id: id,
     contentType: "paragraph",
-    content: { paragraph: "Header section" },
+    content: { paragraph: "Paragraph section" },
   });
 
 export default function AddPageComponent() {

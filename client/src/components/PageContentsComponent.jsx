@@ -24,6 +24,7 @@ export default function PageContentsComponent({}) {
   const navigate = useNavigate();
   const location = useLocation();
   const page = Page.deserialize(location.state.page);
+  const modifyPage = user?.id === page.userId || user?.role === "admin";
 
   console.log(page);
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function PageContentsComponent({}) {
         setContents(c);
       })
       .catch((err) => {
+        setContents([]);
         setError(true);
       })
       .finally(() => {
@@ -51,8 +53,15 @@ export default function PageContentsComponent({}) {
         {error ? (
           <Alert variant="danger">There was an unexpected error.</Alert>
         ) : null}
-        <PageInfoComponent page={page} />
-        <DeletePageButton page={page} onSuccess={() => navigate(-1)} />
+        <PageInfoComponent
+          page={page}
+          footer={
+            modifyPage ? (
+              <DeletePageButton page={page} onSuccess={() => navigate(-1)} />
+            ) : null
+          }
+        />
+        <h1>Contents</h1>
         <ContentListComponent contents={contents} />
       </Container>
     </>
@@ -63,8 +72,9 @@ export default function PageContentsComponent({}) {
  *
  * @param {Object} props
  * @param {Page} props.page
+ * @param {React.JSX.Element} props.footer
  */
-function PageInfoComponent({ page }) {
+function PageInfoComponent({ page, footer }) {
   return (
     <Card>
       <Card.Header>
@@ -90,6 +100,7 @@ function PageInfoComponent({ page }) {
           </strong>
         </ListGroupItem>
       </ListGroup>
+      {footer ? <Card.Footer>{footer}</Card.Footer> : null}
     </Card>
   );
 }

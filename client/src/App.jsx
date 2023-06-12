@@ -15,6 +15,7 @@ import PageComponent from "./components/PageComponent";
 import AuthProvider from "./contexts/AuthContext";
 import PageContentsComponent from "./components/PageContentsComponent";
 import AddPageComponent from "./components/AddPageComponent";
+import Page404 from "./components/Page404";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
               element={<PageContentsComponent />}
             />
             <Route path="/" element={<Navigate to="/pages" />} />
+            <Route path="/*" element={<Page404 />} />
           </Route>
         </Routes>
       </BrowserRouter>

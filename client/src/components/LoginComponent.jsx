@@ -69,10 +69,14 @@ export default function LoginComponent(props) {
           />
         </Form.Group>
         <Form.Group className="d-flex">
-          <Button className="btn-warning" disabled={waiting} onClick={onClose}>
+          <Button
+            className="btn-warning m-2"
+            disabled={waiting}
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={waiting}>
+          <Button className="m-2" type="submit" disabled={waiting}>
             Login
             <Spinner hidden={!waiting} size="sm" />
           </Button>

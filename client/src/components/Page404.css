@@ -1,0 +1,33 @@
+@keyframes spinning {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .airplane-container {
+    animation: spinning infinite 5s linear;
+  }
+}
+
+.airplane-container {
+  max-height: 50px;
+  z-index: -1;
+}
+
+@keyframes left-to-right {
+  from {
+    left: 100%;
+  }
+  to {
+    left: -10%;
+  }
+}
+
+
+.moving {
+  animation: left-to-right infinite 4s alternate-reverse;
+}
