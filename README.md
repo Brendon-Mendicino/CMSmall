@@ -231,15 +231,22 @@
   | `id` | `userId` | `title` | `creationDate` | `publicationDate` |
   |-|-|-|-|-|
 
+  - `userId FOREIGN KEY users(id)` with `ON DELETE CASCADE`
+
 - Table `contents` - represent a single content inside a page
   | `id` | `pageId` | `contentType` | `content` |
   |-|-|-|-|
+
+  - `pageId FOREIGN KEY pages(id)` with `ON DELETE CASCADE`
 
 - Table `page_content` - represent the page ownership of contents and their order
   | `order` | `pageId` | `contentId` |
   |-|-|-|
 
-- Table `webpage` - contains the name of the page
+  - `pageId FOREIGN KEY pages(id)` with `ON DELETE CASCADE`
+  - `contentId FOREIGN KEY contens(id)` with `ON DELETE CASCADE`
+
+- Table `webpage` - contains some informations about the webpage
   | `name` |
   |-|
 

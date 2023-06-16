@@ -105,7 +105,6 @@ router.get("/api/pages/:pageId/contents", async (req, res) => {
       Page.get(pageId),
     ]);
 
-    console.log(req.isAuthenticated());
     if (
       !req.isAuthenticated() &&
       !dayjs().isAfter(dayjs(page.publicationDate))
