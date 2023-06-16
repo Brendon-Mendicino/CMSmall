@@ -11,7 +11,7 @@ import { imagePath } from "../utils/imageUtils";
 export function ContentListComponent({ contents }) {
   return (
     <>
-      <Row sm={1} md={1} className="g-4">
+      <Row xs={1} md={1} className="g-4">
         {contents.map((c) => (
           <Col key={c.id}>
             <ContentItemComponent content={c} />

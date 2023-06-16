@@ -18,16 +18,16 @@
   z-index: -1;
 }
 
-@keyframes left-to-right {
+@keyframes leftright {
   from {
-    left: 100%;
+    left: 110%;
   }
   to {
     left: -10%;
   }
 }
 
-
 .moving {
-  animation: left-to-right infinite 4s alternate-reverse;
+  position: absolute;
+  animation: leftright infinite 4s alternate-reverse;
 }

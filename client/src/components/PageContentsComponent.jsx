@@ -11,7 +11,7 @@ import {
   Row,
 } from "react-bootstrap";
 import { ContentListComponent } from "./ContentListComponent";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Page from "../models/page";
 import PageStateBadge from "./PageStateBadge";
 import DeletePageButton from "./DeletePageButton";
@@ -23,15 +23,17 @@ export default function PageContentsComponent({}) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const page = Page.deserialize(location.state.page);
-  const modifyPage = user?.id === page.userId || user?.role === "admin";
+  const page = location.state?.page && Page.deserialize(location.state.page);
+  const modifyPage = user?.id === page?.userId || user?.role === "admin";
 
-  console.log(page);
+  /* Go back if page is not valid */
+  if (!page) return <Navigate to={"/pages"} />;
+
   useEffect(() => {
     setWaiting(true);
     setError(false);
 
-    API.getContents(page.id)
+    API.getContents(page?.id)
       .then((c) => {
         setContents(c);
       })
@@ -46,7 +48,7 @@ export default function PageContentsComponent({}) {
 
   return (
     <>
-      <Container>
+      <Container className="pb-5">
         {waiting ? (
           <Alert variant="secondary">Waiting for server response...</Alert>
         ) : null}

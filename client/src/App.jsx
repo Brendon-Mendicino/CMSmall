@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -6,7 +5,6 @@ import {
   Navigate,
   Outlet,
   Route,
-  Router,
   Routes,
 } from "react-router-dom";
 import NavbarComponent from "./components/NavbarComponent";
