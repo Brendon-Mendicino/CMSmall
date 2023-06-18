@@ -12,6 +12,7 @@ import User from "../dao/userDao.js";
 import crypto from "crypto";
 import { KEY_LEN, SALT_LEN } from "../constants.js";
 import UserModel from "../models/userModel.js";
+import { mainModule } from "process";
 
 const router = Router();
 
@@ -47,6 +48,40 @@ router.get("/api/pages", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
+  try {
+    const { ok, page, contents } = await pageValidation(req.body);
+    if (!ok) {
+      return res.status(400).json();
+    }
+
+    const pageExist = (await Page.exist([page]))[0];
+    if (page.id !== req.params.pageId || !pageExist) {
+      return res.status(404).json({ error: "Page not found" });
+    }
+
+    const contentsWithPageId = contents.map(
+      (c) =>
+        new ContentModel({
+          ...c,
+          pageId: page.id,
+        })
+    );
+
+    const contentsExist = (await Content.exist(contentsWithPageId)).reduce(
+      (prev, curr) => prev & curr
+    );
+    if (!contentsExist) {
+      return res.status(404).json({ error: "Contents not found" });
+    }
+
+    res.status(204).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
   }
 });
 

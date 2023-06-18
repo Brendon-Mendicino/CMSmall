@@ -83,4 +83,28 @@ Page.insertPage = (page) => {
   });
 };
 
+/**
+ *
+ * @param {PageModel[]} pages
+ * @returns
+ */
+Page.exist = (pages) => {
+  /** @type {Promise.<boolean>[]} */
+  const promises = pages.map(
+    (page) =>
+      new Promise((resolve, reject) => {
+        const query = "SELECT COUNT(*) FROM pages WHERE id = ?, userId = ?";
+
+        db.get(query, [page.id, page.userId], (err, row) => {
+          if (err) reject(err);
+
+          console.log(row);
+          resolve(pages.length === row);
+        });
+      })
+  );
+
+  return Promise.all(promises);
+};
+
 export default Page;

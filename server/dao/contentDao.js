@@ -62,20 +62,36 @@ Content.insert = async (pageId, contents) => {
   });
 
   return Promise.all(promises);
+};
 
-  // const orderPromises = contents.map((content, index) => {
-  //   return new Promise((resolve, reject) => {
-  //     const queryOrder =
-  //       "INSERT INTO page_content (order, pageId, contentId) VALUES (?,?,?)";
+/**
+ *
+ * @param {ContentModel[]} contents
+ * @returns
+ */
+Content.update = (contents) => {};
 
-  //     db.run(queryOrder, [index, pageId, content.id], (err) => {
-  //       if (err) reject(err);
-  //       else resolve();
-  //     });
-  //   });
-  // });
+/**
+ *
+ * @param {ContentModel[]} contents
+ * @returns 
+ */
+Content.exist = (contents) => {
+  /** @type {Promise.<boolean>[]} */
+  const promises = contents.map(
+    (content) =>
+      new Promise((resolve, reject) => {
+        const query = "SELECT COUNT(*) WHERE id = ? AND pageId = ?";
 
-  // return Promise.all(orderPromises);
+        db.get(query, [content.id, content.pageId], (err, row) => {
+          if (err) reject(err);
+
+          resolve(contents.length === row);
+        });
+      })
+  );
+
+  return Promise.all(promises);
 };
 
 export default Content;
