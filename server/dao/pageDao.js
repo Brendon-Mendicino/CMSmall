@@ -107,4 +107,30 @@ Page.exist = (pages) => {
   return Promise.all(promises);
 };
 
+/**
+ *
+ * @param {PageModel[]} pages
+ * @returns
+ */
+Page.update = (pages) => {
+  const promises = pages.map(
+    (page) =>
+      new Promise((resolve, reject) => {
+        const query =
+          "UPDATE pages SET userId = ?, title = ?, publicationDate = ? WHERE id = ?";
+
+        db.run(
+          query,
+          [page.userId, page.title, page.publicationDate, page.id],
+          (err) => {
+            if (err) reject(err);
+            resolve();
+          }
+        );
+      })
+  );
+
+  return Promise.all(promises);
+};
+
 export default Page;

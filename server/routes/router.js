@@ -7,12 +7,10 @@ import Content from "../dao/contentDao.js";
 import pageValidation from "../validations/pageValidation.js";
 import Webpage from "../dao/webpageDao.js";
 import ContentModel from "../models/contentModel.js";
-import PageModel from "../models/pageModel.js";
 import User from "../dao/userDao.js";
 import crypto from "crypto";
 import { KEY_LEN, SALT_LEN } from "../constants.js";
 import UserModel from "../models/userModel.js";
-import { mainModule } from "process";
 
 const router = Router();
 
@@ -77,6 +75,14 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
     if (!contentsExist) {
       return res.status(404).json({ error: "Contents not found" });
     }
+
+    // Check if user updating other user page
+    if (req.user.id !== page.userId && req.user.role !== "admin") {
+      return res.status(401).json({ error: "Cannot change other users page" });
+    }
+
+    await Page.update([page]);
+    await Content.update(contentsWithPageId);
 
     res.status(204).json();
   } catch (error) {

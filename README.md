@@ -69,11 +69,20 @@
   - request body
   ```json
   {
+    "id": 1,
     "userId": 1,
     "title": "Why JS is bad.",
     "author": "Brendon",
     "creationDate": "2020-10-01",
-    "publicationDate": "2020-10-02"
+    "publicationDate": "2020-10-02",
+    "contents": [
+      {
+        "id": 1,
+        "contentType": "header",
+        "content": "Content text"
+      },
+      ...
+    ]
   }
   ```
   - response status:
@@ -234,17 +243,10 @@
   - `userId FOREIGN KEY users(id)` with `ON DELETE CASCADE`
 
 - Table `contents` - represent a single content inside a page
-  | `id` | `pageId` | `contentType` | `content` |
-  |-|-|-|-|
+  | `id` | `pageId` | `contentType` | `content` | `order` |
+  |-|-|-|-|-|
 
   - `pageId FOREIGN KEY pages(id)` with `ON DELETE CASCADE`
-
-- Table `page_content` - represent the page ownership of contents and their order
-  | `order` | `pageId` | `contentId` |
-  |-|-|-|
-
-  - `pageId FOREIGN KEY pages(id)` with `ON DELETE CASCADE`
-  - `contentId FOREIGN KEY contens(id)` with `ON DELETE CASCADE`
 
 - Table `webpage` - contains some informations about the webpage
   | `name` |
