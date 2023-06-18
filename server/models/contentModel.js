@@ -42,14 +42,14 @@ export default class ContentModel {
    * @param {number} content.pageId
    * @param {CONTENT_TYPE} content.contentType
    * @param {string} content.content
-   * @param {number} content.order
+   * @param {number} content.position
    */
-  constructor({ id, pageId, contentType, content, order }) {
+  constructor({ id, pageId, contentType, content, position }) {
     this.id = id;
     this.pageId = pageId;
     this.contentType = contentType;
     this.content = content;
-    this.order = order;
+    this.order = position;
   }
 
   /**
@@ -60,7 +60,7 @@ export default class ContentModel {
     return {
       ...this,
       pageId: undefined,
-      order: undefined,
+      position: undefined,
     };
   }
 }

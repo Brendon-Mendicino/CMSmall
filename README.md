@@ -13,7 +13,7 @@
 ## API Server
 
 - GET `/api/pages`
-  - description: get the list of pages, they are returned ordered by `publicationDate`, non-authenticated user will anly receive "published" pages
+  - description: get the list of pages, they are returned ordered by `publicationDate`, non-authenticated user will only receive "published" pages
   - response body content
   ```json
   [
@@ -35,6 +35,7 @@
   - request body
   ```json
   {
+    "id": 1,
     "userId": 1,
     "title": "Why JS is bad.",
     "author": "Brendon",
@@ -42,6 +43,7 @@
     "publicationDate": "2020-10-02",
     "contents": [
       {
+        "id": 1,
         "contentType": "header",
         "content": "Content text"
       },
@@ -65,7 +67,7 @@
     - `404 Not Found` page not found
     - `500 Internal Server Error`
 - POST `/api/pages/:pageId`
-  - description: update a page, only the owner of the page or an admin can perform this action
+  - description: update a page and his contents, only the owner of the page or an admin can perform this action
   - request body
   ```json
   {
@@ -86,7 +88,7 @@
   }
   ```
   - response status:
-    - `200 OK`
+    - `204 OK`
     - `401 Unauthorized` wasn't owner of the page nor an admin
     - `404 Not Found` page not found
     - `500 Internal Server Error`
@@ -108,11 +110,12 @@
     - `200 OK`
     - `404 Not Found` page not found
     - `500 Internal Server Error`
-- PUT `/api/pages/:pageId/contents`
+<!-- - PUT `/api/pages/:pageId/contents`
   - description: add a new content to a page
   - request body:
   ```json
   {
+    "id": 1,
     "contentType": "header",
     "content": "Contains the header text"
   }
@@ -139,6 +142,7 @@
   - request body:
   ```json
   {
+    "id": 1,
     "contentType": "header",
     "content": "Contains the header text"
   }
@@ -155,7 +159,7 @@
   - response body: empty
   - response status:
     - `200 OK`
-    - `400 Bad Request` a page must alway contain at least one header and at least another content
+    - `400 Bad Request` a page must alway contain at least one header and at least another content -->
 - POST `/api/login`
   - description: login to receive `sessionId`
   - request body:
@@ -210,7 +214,7 @@
   ```
   - response body: empty
   - response status:
-    - `201 Created`
+    - `204 No Content`
     - `400 Bad Request` wrong format
     - `401 Unauthorized`
     - `500 Internal Server Error`

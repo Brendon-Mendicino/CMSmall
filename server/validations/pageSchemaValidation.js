@@ -5,6 +5,7 @@ import * as yup from "yup";
 
 export default function pageSchemaValidation() {
   return yup.object({
+    id: yup.number().required(),
     userId: yup.number().required(),
     title: yup.string().required(),
     author: yup.string().required(),
@@ -22,6 +23,7 @@ export default function pageSchemaValidation() {
       ),
     contents: yup.array(
       yup.object({
+        id: yup.number().required(),
         contentType: yup
           .string()
           .oneOf(["header", "paragraph", "image"])

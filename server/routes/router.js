@@ -57,7 +57,7 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
     }
 
     const pageExist = (await Page.exist([page]))[0];
-    if (page.id !== req.params.pageId || !pageExist) {
+    if (page.id !== Number(req.params.pageId) || !pageExist) {
       return res.status(404).json({ error: "Page not found" });
     }
 
@@ -69,12 +69,14 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
         })
     );
 
-    const contentsExist = (await Content.exist(contentsWithPageId)).reduce(
-      (prev, curr) => prev & curr
-    );
-    if (!contentsExist) {
-      return res.status(404).json({ error: "Contents not found" });
-    }
+    const contentsStatus = Content.insert(page.id, [
+      ...(await Content.exist(contentsWithPageId))
+        .map((exist, index) => (!exist ? contents[index] : null))
+        .filter((c) => (c ? true : false)),
+    ]);
+
+    await contentsStatus;
+    await Content.deleteExclude(page.id, contents);
 
     // Check if user updating other user page
     if (req.user.id !== page.userId && req.user.role !== "admin") {
@@ -82,7 +84,7 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
     }
 
     await Page.update([page]);
-    await Content.update(contentsWithPageId);
+    await Content.updateAll(contentsWithPageId);
 
     res.status(204).json();
   } catch (error) {
@@ -229,7 +231,7 @@ router.post("/api/webpage/name", isAdmin, async (req, res) => {
     const name = await schema.validate(req.body);
 
     await Webpage.setName(name);
-    res.status(200).json();
+    res.status(204).json();
   } catch (error) {
     console.log(error);
     res.status(500).json({ error });

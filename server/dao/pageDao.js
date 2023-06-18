@@ -93,13 +93,12 @@ Page.exist = (pages) => {
   const promises = pages.map(
     (page) =>
       new Promise((resolve, reject) => {
-        const query = "SELECT COUNT(*) FROM pages WHERE id = ?, userId = ?";
+        const query = "SELECT COUNT(*) AS npages FROM pages WHERE id = ? AND userId = ?";
 
         db.get(query, [page.id, page.userId], (err, row) => {
-          if (err) reject(err);
+          if (err) return reject(err);
 
-          console.log(row);
-          resolve(pages.length === row);
+          resolve(pages.length === row.npages);
         });
       })
   );
