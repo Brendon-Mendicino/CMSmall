@@ -14,6 +14,7 @@ import AuthProvider from "./contexts/AuthContext";
 import PageContentsComponent from "./components/PageContentsComponent";
 import AddPageComponent from "./components/AddPageComponent";
 import Page404 from "./components/Page404";
+import UpdatePageComponent from "./components/UpdatePageComponent";
 
 function App() {
   return (
@@ -34,6 +35,10 @@ function App() {
             <Route
               path="/pages/:pageId/contents"
               element={<PageContentsComponent />}
+            />
+            <Route
+              path="/pages/:pageId/edit"
+              element={<UpdatePageComponent />}
             />
             <Route path="/" element={<Navigate to="/pages" />} />
             <Route path="/*" element={<Page404 />} />

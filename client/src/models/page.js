@@ -77,7 +77,6 @@ export default class Page {
     const ser = this.serialize();
     return {
       ...ser,
-      id: undefined,
       publicationState: undefined,
     };
   }

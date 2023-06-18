@@ -52,6 +52,13 @@ export default class Content {
     this.content = content;
   }
 
+  serialize() {
+    return {
+      ...this,
+      content: this.content[this.contentType],
+    };
+  }
+
   /**
    *
    * @param {Object} content
@@ -107,11 +114,11 @@ export default class Content {
     }
   }
 
-  /** @returns {{contentType:CONTENT_TYPE, content:string}} */
+  /** @returns {{id:number, contentType:CONTENT_TYPE, content:string}} */
   mapToModel() {
+    const ser = this.serialize();
     return {
-      contentType: this.contentType,
-      content: this.content[this.contentType],
+      ...ser,
     };
   }
 }

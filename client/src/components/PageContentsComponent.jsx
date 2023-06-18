@@ -15,15 +15,20 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Page from "../models/page";
 import PageStateBadge from "./PageStateBadge";
 import DeletePageButton from "./DeletePageButton";
+import UpdatePageButton from "./UpdatePageButton";
+import Content from "../models/content";
 
 export default function PageContentsComponent({}) {
   const [waiting, setWaiting] = useState(true);
   const [error, setError] = useState(false);
-  const [contents, setContents] = useState([]);
+  const [contents, setContents] = useState(/** @type {Content[]} */ ([]));
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const page = location.state?.page && Page.deserialize(location.state.page);
+  const page = location.state?.page
+    ? Page.deserialize(location.state.page)
+    : null;
+
   const modifyPage = user?.id === page?.userId || user?.role === "admin";
 
   /* Go back if page is not valid */
@@ -46,6 +51,14 @@ export default function PageContentsComponent({}) {
       });
   }, [user]);
 
+  const editPage = () =>
+    navigate(`/pages/${page.id}/edit`, {
+      state: {
+        page: page.serialize(),
+        contents: contents.map((c) => c.serialize()),
+      },
+    });
+
   return (
     <>
       <Container className="pb-5">
@@ -59,7 +72,10 @@ export default function PageContentsComponent({}) {
           page={page}
           footer={
             modifyPage ? (
-              <DeletePageButton page={page} onSuccess={() => navigate(-1)} />
+              <>
+                <DeletePageButton page={page} onSuccess={() => navigate(-1)} />
+                <UpdatePageButton page={page} onClick={editPage} />
+              </>
             ) : null
           }
         />

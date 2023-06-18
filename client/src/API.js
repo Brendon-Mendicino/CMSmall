@@ -26,7 +26,6 @@ API.getPages = async () => {
   }
 
   const body = await res.json();
-  console.log(body.map((p) => Page.deserialize(p)));
   return body.map((p) => Page.deserialize(p));
 };
 
@@ -49,6 +48,30 @@ API.createPage = async (page, contents) => {
   });
 
   return res.ok;
+};
+
+/**
+ *
+ * @param {Page} page
+ * @param {Content[]} contents
+ * @returns 
+ */
+API.updatePage = async (page, contents) => {
+  const res = await fetch(`${SERVER_URL}/pages/${page.id}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...page.mapToModel(),
+      contents: contents.map((c) => c.mapToModel()),
+    }),
+  });
+
+  if (!res.ok) throw Error();
+
+  return true;
 };
 
 /**
@@ -150,7 +173,6 @@ API.logout = async () => {
     signal: AbortSignal.timeout(5000),
   });
 
-  console.log(res.ok);
   return res.ok;
 };
 
