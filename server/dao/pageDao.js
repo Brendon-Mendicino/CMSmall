@@ -112,6 +112,7 @@ Page.exist = (pages) => {
  * @returns
  */
 Page.update = (pages) => {
+  /** @type {Promise<boolean>[]} */
   const promises = pages.map(
     (page) =>
       new Promise((resolve, reject) => {
@@ -121,9 +122,10 @@ Page.update = (pages) => {
         db.run(
           query,
           [page.userId, page.title, page.publicationDate, page.id],
-          (err) => {
-            if (err) reject(err);
-            resolve();
+          function (err) {
+            if (err) return reject(err);
+
+            resolve(this.changes === 1);
           }
         );
       })
