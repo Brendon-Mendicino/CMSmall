@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Container,
   Nav,
@@ -43,7 +44,8 @@ export default function NavbarComponent(props) {
           <div className="d-flex flex-row align-items-center">
             {user ? (
               <span style={{ marginInlineEnd: "1rem" }}>
-                Logged in as <strong>{user.name}</strong>
+                Logged in as <strong>{user.name}</strong>{" "}
+                {user.role === "admin" ? <Badge pill>Admin</Badge> : null}
               </span>
             ) : null}
             {user ? <LogoutButton /> : <LoginButton />}
