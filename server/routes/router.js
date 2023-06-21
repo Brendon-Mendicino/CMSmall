@@ -45,7 +45,29 @@ router.get("/api/pages", async (req, res) => {
     res.status(200).json(pages);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error });
+  }
+});
+
+router.get("/api/pages/:pageId", async (req, res) => {
+  try {
+    const pageId = await yup.number().required().validate(req.params.pageId);
+
+    const page = await Page.get(pageId);
+
+    if (!page) return res.status(404).json();
+
+    if (
+      !req.isAuthenticated() &&
+      !dayjs().isAfter(dayjs(page.publicationDate))
+    ) {
+      return res.status(401).json();
+    }
+
+    res.status(200).json(page);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
   }
 });
 
@@ -158,7 +180,7 @@ router.get("/api/pages/:pageId/contents", async (req, res) => {
     res.status(200).json(contents.map((c) => c.mapToSend()));
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error });
   }
 });
 

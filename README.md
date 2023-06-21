@@ -66,6 +66,25 @@
     - `401 Unauthorized` wasn't owner of the page nor an admin
     - `404 Not Found` page not found
     - `500 Internal Server Error`
+- GET `/api/pages/:pageId`
+  - description: get the list a single page, non-authenticated user will only receive "published" pages
+  - request body: empty
+  - response body content
+  ```json
+  {
+    "id": 1,
+    "userId": 1,
+    "title": "Why JS is bad.",
+    "author": "Brendon",
+    "creationDate": "2020-10-01",
+    "publicationDate": "2020-10-02"
+  }
+  ```
+  - repsonse status
+    - `200 OK`
+    - `401 Unauthorized` If non-authenticated user tried to access non-"published" page
+    - `404 Not Fount` Page not found
+    - `500 Internal Server Error`
 - POST `/api/pages/:pageId`
   - description: update a page and his contents, only the owner of the page or an admin can perform this action
   - request body

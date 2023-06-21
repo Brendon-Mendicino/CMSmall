@@ -31,12 +31,15 @@ Page.getPages = () => {
  */
 Page.get = (pageId) => {
   return new Promise((resolve, reject) => {
-    const query = "SELECT * FROM pages WHERE id = ?";
+    const query =
+      "SELECT *, users.name as author, pages.id as id FROM pages, users " +
+      "WHERE pages.id = ? AND users.id = pages.userId";
 
     db.get(query, [pageId], (err, row) => {
       if (err) return reject();
       if (!row) return resolve(null);
 
+      console.log(pageId, row);
       const page = new PageModel(row);
       resolve(page);
     });
@@ -93,7 +96,8 @@ Page.exist = (pages) => {
   const promises = pages.map(
     (page) =>
       new Promise((resolve, reject) => {
-        const query = "SELECT COUNT(*) AS npages FROM pages WHERE id = ? AND userId = ?";
+        const query =
+          "SELECT COUNT(*) AS npages FROM pages WHERE id = ? AND userId = ?";
 
         db.get(query, [page.id, page.userId], (err, row) => {
           if (err) return reject(err);
