@@ -20,14 +20,27 @@
 
 @keyframes leftright {
   from {
-    left: 110%;
+    margin-left: 110%;
   }
   to {
-    left: -10%;
+    margin-left: -10%;
+  }
+}
+
+@keyframes step-ratation {
+  0% { 
+    transform: rotate(180deg);
+  }
+  50% { 
+    transform: rotate(0deg);
   }
 }
 
 .moving {
   position: absolute;
   animation: leftright infinite 4s alternate-reverse;
+}
+
+.step-rotate {
+  animation: step-ratation infinite 8s steps(1);
 }
