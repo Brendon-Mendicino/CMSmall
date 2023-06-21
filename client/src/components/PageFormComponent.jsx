@@ -21,6 +21,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import API from "../API";
 import Page from "../models/page";
 import { DeleteButton, DownButton, UpButton } from "./ButtonComponent";
+import User from "../models/user";
 
 const defaultContent = (id) =>
   new Content({
@@ -34,6 +35,7 @@ const defaultContent = (id) =>
  * @param {Object} props
  * @param {boolean} props.waiting,
  * @param {boolean} props.error,
+ * @param {User[]?} props.users,
  * @param {Page} props.page,
  * @param {React.Dispatch<React.SetStateAction<Page>>} props.setPage,
  * @param {Content[]} props.contents,
@@ -45,6 +47,7 @@ const defaultContent = (id) =>
 export default function PageFormComponent({
   waiting,
   error,
+  users,
   page,
   setPage,
   contents,
@@ -196,15 +199,7 @@ export default function PageFormComponent({
       {/* Actual FORM implementation */}
       <Form onSubmit={handleSubmit}>
         <PageInfoComponent>
-          <Form.Group>
-            <Form.Label>Author</Form.Label>
-            <Form.Control
-              type="text"
-              defaultValue={page.author}
-              disabled
-              required
-            />
-          </Form.Group>
+          <PageAuthor users={users} page={page} setPage={setPage} />
           <Form.Group>
             <Form.Label>Creation date</Form.Label>
             <Form.Control
@@ -244,9 +239,9 @@ export default function PageFormComponent({
             />
           </Form.Group>
         </PageInfoComponent>
-        <PageContentComponent>
-          {contents.map((c, index) => (
-            <Form.Group key={c.id}>
+        {contents.map((c, index) => (
+          <Form.Group key={c.id}>
+            <PageContentComponent>
               <ContentFormItem
                 content={c}
                 index={index}
@@ -257,11 +252,10 @@ export default function PageFormComponent({
                 moveUp={moveUp}
                 moveDown={moveDown}
               />
-              <hr />
-            </Form.Group>
-          ))}
-          <Button onClick={addContent}>Add content</Button>
-        </PageContentComponent>
+            </PageContentComponent>
+          </Form.Group>
+        ))}
+        <Button onClick={addContent}>Add content</Button>
         <Form.Group className="d-flex justify-content-end page-form-btn-container">
           <Button
             className="btn-warning"
@@ -279,6 +273,54 @@ export default function PageFormComponent({
   );
 }
 
+/**
+ *
+ * @param {Object} props
+ * @param {User[]?} props.users,
+ * @param {Page} props.page,
+ * @param {React.Dispatch<React.SetStateAction<Page>>} props.setPage,
+ * @returns
+ */
+function PageAuthor({ users, page, setPage }) {
+  const usersMap = users && new Map(users.map((u) => [u.id, u]));
+
+  return (
+    <Form.Group>
+      <Form.Label>Author</Form.Label>
+      {!users ? (
+        <Form.Control
+          type="text"
+          defaultValue={page.author}
+          disabled
+          required
+        />
+      ) : (
+        <Form.Select
+          value={page.userId}
+          onChange={(e) =>
+            setPage((old) => {
+              const userId = Number(e.target.value);
+
+              return new Page({
+                ...old,
+                userId,
+                author: usersMap.get(userId).name,
+              });
+            })
+          }
+          required
+        >
+          {Array.from(usersMap.entries()).map(([key, value]) => (
+            <option key={key} value={key}>
+              {value.name}
+            </option>
+          ))}
+        </Form.Select>
+      )}
+    </Form.Group>
+  );
+}
+
 function PageInfoComponent({ children }) {
   return (
     <Card className="page-container">
@@ -291,7 +333,6 @@ function PageInfoComponent({ children }) {
 function PageContentComponent({ children }) {
   return (
     <Card className="page-container">
-      <Card.Header>Page contents section</Card.Header>
       <Card.Body>{children}</Card.Body>
     </Card>
   );

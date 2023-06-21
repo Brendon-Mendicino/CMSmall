@@ -11,7 +11,12 @@ import {
   Row,
 } from "react-bootstrap";
 import { ContentListComponent } from "./ContentListComponent";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import Page from "../models/page";
 import PageStateBadge from "./PageStateBadge";
 import DeletePageButton from "./DeletePageButton";
@@ -22,28 +27,28 @@ export default function PageContentsComponent({}) {
   const [waiting, setWaiting] = useState(true);
   const [error, setError] = useState(false);
   const [contents, setContents] = useState(/** @type {Content[]} */ ([]));
+  const [page, setPage] = useState(/** @type {Page?} */ (null));
   const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const page = location.state?.page
-    ? Page.deserialize(location.state.page)
-    : null;
+  const pageId = Number(useParams().pageId);
 
-  const modifyPage = user?.id === page?.userId || user?.role === "admin";
+  const modifyPage = user && (user?.id === page?.userId || user?.role === "admin");
+  console.log(modifyPage);
 
-  /* Go back if page is not valid */
-  if (!page) return <Navigate to={"/pages"} />;
+  /* Go back if pageId is not valid */
+  if (isNaN(pageId)) return <Navigate to={"/pages"} />;
 
   useEffect(() => {
     setWaiting(true);
     setError(false);
 
-    API.getContents(page?.id)
-      .then((c) => {
-        setContents(c);
-      })
+    const promises = Promise.all([
+      API.getContents(pageId).then((c) => setContents(c)),
+      API.getPage(pageId).then((p) => setPage(p)),
+    ]);
+
+    promises
       .catch((err) => {
-        setContents([]);
         setError(true);
       })
       .finally(() => {
@@ -89,31 +94,31 @@ export default function PageContentsComponent({}) {
 /**
  *
  * @param {Object} props
- * @param {Page} props.page
+ * @param {Page?} props.page
  * @param {React.JSX.Element} props.footer
  */
 function PageInfoComponent({ page, footer }) {
   return (
     <Card>
       <Card.Header>
-        Page content info. <PageStateBadge page={page} />
+        Page content info. {page ? <PageStateBadge page={page} /> : null}
       </Card.Header>
       <ListGroup variant="flush">
         <ListGroupItem>
-          Author: <strong>{page.author}</strong>
+          Author: <strong>{page?.author}</strong>
         </ListGroupItem>
         <ListGroupItem>
-          Title: <strong>{page.title}</strong>
+          Title: <strong>{page?.title}</strong>
         </ListGroupItem>
         <ListGroupItem>
           Creation date:{" "}
-          <strong>{page.creationDate.format("YYYY-MM-DD")}</strong>
+          <strong>{page?.creationDate.format("YYYY-MM-DD")}</strong>
         </ListGroupItem>
         <ListGroupItem>
           Publication date:{" "}
           <strong>
-            {page.publicationDate
-              ? page.publicationDate.format("YYYY-MM-DD")
+            {page?.publicationDate
+              ? page?.publicationDate.format("YYYY-MM-DD")
               : "Unpublished"}
           </strong>
         </ListGroupItem>
