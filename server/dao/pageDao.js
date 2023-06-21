@@ -97,9 +97,9 @@ Page.exist = (pages) => {
     (page) =>
       new Promise((resolve, reject) => {
         const query =
-          "SELECT COUNT(*) AS npages FROM pages WHERE id = ? AND userId = ?";
+          "SELECT COUNT(*) AS npages FROM pages WHERE id = ?";
 
-        db.get(query, [page.id, page.userId], (err, row) => {
+        db.get(query, [page.id], (err, row) => {
           if (err) return reject(err);
 
           resolve(pages.length === row.npages);

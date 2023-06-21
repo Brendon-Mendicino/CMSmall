@@ -129,6 +129,7 @@
     - `200 OK`
     - `404 Not Found` page not found
     - `500 Internal Server Error`
+
 <!-- - PUT `/api/pages/:pageId/contents`
   - description: add a new content to a page
   - request body:
@@ -179,6 +180,7 @@
   - response status:
     - `200 OK`
     - `400 Bad Request` a page must alway contain at least one header and at least another content -->
+
 - POST `/api/login`
   - description: login to receive `sessionId`
   - request body:
@@ -252,6 +254,25 @@
   - response status:
     - `204 No Content`
     - `500 Internal Server Error`
+- GET `/api/users`
+  - description: get registered usres, only admin can access this route
+  - request body: empty
+  - response body:
+  ```json
+  [
+    {
+      "id": 1,
+      "email": "bre@bre.it",
+      "name": "Brendon",
+      "role": "admin"
+    },
+    ...
+  ]
+  ```
+  - response status:
+    - `200 OK`: _if admin_
+    - `401 Unauthorized`: _if not admin_
+    - `500 Server Interal Error`
 
 ## Database Tables
 

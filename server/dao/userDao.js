@@ -23,6 +23,24 @@ User.getUser = (email) => {
 };
 
 /**
+ * 
+ * @returns {Promise<UserModel[]>}
+ */
+User.getAll = () => {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT * FROM users";
+
+    db.all(query, (err, rows) => {
+      if (err) return reject(err);
+      if (!rows) return resolve([]);
+
+      const users = rows.map((r) => new UserModel({ ...r }));
+      resolve(users);
+    })
+  })
+}
+
+/**
  *
  * @param {UserModel} user
  */

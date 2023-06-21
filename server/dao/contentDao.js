@@ -97,6 +97,23 @@ Content.updateAll = (contents) => {
 };
 
 /**
+ * 
+ * @param {number} pageId 
+ * @returns {Promise}
+ */
+Content.deleteWithPageId = (pageId) => {
+  return new Promise((resolve, reject) => {
+    const query = "DELETE FROM contents WHERE pageId = ?";
+
+    db.run(query, [pageId], (err) => {
+      if (err) return reject(err);
+
+      resolve(err);
+    });
+  });
+};
+
+/**
  *
  * @param {number} pageId
  * @param {ContentModel[]} contents
@@ -125,8 +142,9 @@ Content.exist = (contents) => {
   const promises = contents.map(
     (content) =>
       new Promise((resolve, reject) => {
-        const query = "SELECT IFNULL(COUNT(*), 0) AS ncontents " +
-        "FROM contents WHERE id = ? AND pageId = ?";
+        const query =
+          "SELECT IFNULL(COUNT(*), 0) AS ncontents " +
+          "FROM contents WHERE id = ? AND pageId = ?";
 
         db.get(query, [content.id, content.pageId], (err, row) => {
           if (err) return reject(err);

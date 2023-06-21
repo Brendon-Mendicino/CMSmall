@@ -83,30 +83,36 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
       return res.status(404).json({ error: "Page not found" });
     }
 
-    const contentsWithPageId = contents.map(
-      (c) =>
-        new ContentModel({
-          ...c,
-          pageId: page.id,
-        })
-    );
+    // Delete all the page contents first and then
+    // insert them back
+    await Content.deleteWithPageId(page.id);
 
-    const contentsStatus = Content.insert(page.id, [
-      ...(await Content.exist(contentsWithPageId))
-        .map((exist, index) => (!exist ? contents[index] : null))
-        .filter((c) => (c ? true : false)),
-    ]);
+    await Content.insert(page.id, contents);
 
-    await contentsStatus;
-    await Content.deleteExclude(page.id, contents);
+    // const contentsWithPageId = contents.map(
+    //   (c) =>
+    //     new ContentModel({
+    //       ...c,
+    //       pageId: page.id,
+    //     })
+    // );
 
-    // Check if user updating other user page
-    if (req.user.id !== page.userId && req.user.role !== "admin") {
-      return res.status(401).json({ error: "Cannot change other users page" });
-    }
+    // const contentsStatus = Content.insert(page.id, [
+    //   ...(await Content.exist(contentsWithPageId))
+    //     .map((exist, index) => (!exist ? contents[index] : null))
+    //     .filter((c) => (c ? true : false)),
+    // ]);
 
-    await Page.update([page]);
-    await Content.updateAll(contentsWithPageId);
+    // await contentsStatus;
+    // await Content.deleteExclude(page.id, contents);
+
+    // // Check if user updating other user page
+    // if (req.user.id !== page.userId && req.user.role !== "admin") {
+    //   return res.status(401).json({ error: "Cannot change other users page" });
+    // }
+
+    // await Page.update([page]);
+    // await Content.updateAll(contentsWithPageId);
 
     res.status(204).json();
   } catch (error) {
@@ -147,7 +153,9 @@ router.put("/api/pages", isAuthenticated, async (req, res) => {
     }
 
     // Insert the server-handled fields
-    page.userId = req.user.id;
+    if (req.user.role !== "admin") {
+      page.userId = req.user.id;
+    }
     page.creationDate = dayjs().format("YYYY-MM-DD");
 
     const pageId = await Page.insertPage(page);
@@ -254,6 +262,17 @@ router.post("/api/webpage/name", isAdmin, async (req, res) => {
 
     await Webpage.setName(name);
     res.status(204).json();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
+});
+
+router.get("/api/users", isAdmin, async (req, res) => {
+  try {
+    const users = await User.getAll();
+
+    res.status(200).json(users);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error });
