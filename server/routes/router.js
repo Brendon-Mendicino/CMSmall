@@ -260,7 +260,7 @@ router.post("/api/webpage/name", isAdmin, async (req, res) => {
     const schema = yup.object({ name: yup.string().required() });
     const name = await schema.validate(req.body);
 
-    await Webpage.setName(name);
+    await Webpage.setName(name.name);
     res.status(204).json();
   } catch (error) {
     console.log(error);

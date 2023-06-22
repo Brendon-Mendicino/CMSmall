@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 
 export default function pageSchemaValidation() {
-  return yup.object({
+  return yup.object().shape({
     id: yup.number().required(),
     userId: yup.number().required(),
     title: yup.string().required(),
@@ -19,7 +19,7 @@ export default function pageSchemaValidation() {
       .string()
       .nullable()
       .test("iso-date", "${path} is not iso-date string", (value, context) =>
-        dayjs(value, "YYYY-MM-DD").isValid()
+        !value ? true : dayjs(value, "YYYY-MM-DD").isValid()
       ),
     contents: yup.array(
       yup.object({

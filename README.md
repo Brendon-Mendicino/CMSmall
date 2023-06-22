@@ -216,7 +216,12 @@
     - `404 Not Found`: **if not authenticated**
     - `500 Server Interal Error`
 - DELETE `/api/logout`
-  - description:
+  - description: logout the current user from the cookeis
+  - request body: empty
+  - response body: empy
+  - response status:
+    - `200 OK`
+    - `400 Bad Request`
 - GET `/api/webpage/name`
   - description: get the name of the webpage
   - request body: empty
