@@ -93,6 +93,7 @@ export default function AddPageComponent() {
 
   return (
     <Container>
+      <h1>Adding new page.</h1>
       {user ? (
         <PageFormComponent
           waiting={waiting}

@@ -83,36 +83,16 @@ router.post("/api/pages/:pageId", isAuthenticated, async (req, res) => {
       return res.status(404).json({ error: "Page not found" });
     }
 
+    // Check if a normal user is updating other user page
+    if (req.user.id !== page.userId && req.user.role !== "admin") {
+      return res.status(401).json({ error: "Cannot change other users page" });
+    }
+
     // Delete all the page contents first and then
     // insert them back
     await Content.deleteWithPageId(page.id);
 
-    await Content.insert(page.id, contents);
-
-    // const contentsWithPageId = contents.map(
-    //   (c) =>
-    //     new ContentModel({
-    //       ...c,
-    //       pageId: page.id,
-    //     })
-    // );
-
-    // const contentsStatus = Content.insert(page.id, [
-    //   ...(await Content.exist(contentsWithPageId))
-    //     .map((exist, index) => (!exist ? contents[index] : null))
-    //     .filter((c) => (c ? true : false)),
-    // ]);
-
-    // await contentsStatus;
-    // await Content.deleteExclude(page.id, contents);
-
-    // // Check if user updating other user page
-    // if (req.user.id !== page.userId && req.user.role !== "admin") {
-    //   return res.status(401).json({ error: "Cannot change other users page" });
-    // }
-
-    // await Page.update([page]);
-    // await Content.updateAll(contentsWithPageId);
+    await Promise.all([Page.update([page]), Content.insert(page.id, contents)]);
 
     res.status(204).json();
   } catch (error) {

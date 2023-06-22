@@ -55,18 +55,21 @@ export default function NavbarComponent(props) {
             >
               <NavDropdown title="Menu">
                 <NavDropdown.Header>Loggedin section</NavDropdown.Header>
-                <NavDropdown.Item as={Link} to={"/pages/add"}>
+                <NavDropdown.Item
+                  as={Link}
+                  to={"/pages/add"}
+                  disabled={!user}
+                >
                   New page
                 </NavDropdown.Item>
-                {user?.role === "admin" ? (
-                  <>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Header>Admin section</NavDropdown.Header>
-                    <NavDropdown.Item onClick={() => setShow(true)}>
-                      Modify title
-                    </NavDropdown.Item>
-                  </>
-                ) : null}
+                <NavDropdown.Divider />
+                <NavDropdown.Header>Admin section</NavDropdown.Header>
+                <NavDropdown.Item
+                  onClick={() => setShow(true)}
+                  disabled={user?.role !== "admin"}
+                >
+                  Modify title
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <div className="d-flex flex-row align-items-center">

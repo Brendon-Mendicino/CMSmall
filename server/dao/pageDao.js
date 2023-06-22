@@ -39,7 +39,6 @@ Page.get = (pageId) => {
       if (err) return reject();
       if (!row) return resolve(null);
 
-      console.log(pageId, row);
       const page = new PageModel(row);
       resolve(page);
     });

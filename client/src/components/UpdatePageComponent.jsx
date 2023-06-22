@@ -38,7 +38,7 @@ export default function UpdatePageComponent() {
         setUsers(value);
       })
       .catch((err) => {
-        setUsers();
+        setUsers(null);
         setError(true);
       })
       .finally(() => {
@@ -70,6 +70,7 @@ export default function UpdatePageComponent() {
 
   return (
     <Container>
+      <h1>Updating page.</h1>
       <PageFormComponent
         waiting={waiting}
         error={error}
