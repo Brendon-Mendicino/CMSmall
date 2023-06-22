@@ -76,7 +76,7 @@ API.createPage = async (page, contents) => {
  * @returns
  */
 API.updatePage = async (page, contents) => {
-  console.log(page)
+  console.log(page);
   const res = await fetch(`${SERVER_URL}/pages/${page.id}`, {
     method: "POST",
     credentials: "include",
@@ -232,7 +232,7 @@ API.setPageName = async (name) => {
 };
 
 /**
- * 
+ *
  * @returns {Promise<User[]>}
  */
 API.getUsers = async () => {
@@ -248,6 +248,26 @@ API.getUsers = async () => {
 
   const body = await res.json();
   return body.map((u) => new User(u));
+};
+
+/**
+ *
+ * @param {string} name
+ * @returns {Promise}
+ */
+API.setTitle = async (name) => {
+  const res = await fetch(`${SERVER_URL}/webpage/name`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!res.ok) throw Error();
+
+  return;
 };
 
 export default API;

@@ -34,16 +34,6 @@ const defaultContents = [
 export default function AddPageComponent() {
   const { user } = useAuth();
 
-  if (!user) {
-    return (
-      <Container>
-        <Alert variant="warning">
-          You need to be authenticated to access this page.
-        </Alert>
-      </Container>
-    );
-  }
-
   const navigate = useNavigate();
   const [waiting, setWaiting] = useState(false);
   const [error, setError] = useState(false);
@@ -52,8 +42,8 @@ export default function AddPageComponent() {
   const [page, setPage] = useState(
     new Page({
       id: 0,
-      userId: user.id,
-      author: user.name,
+      userId: user?.id,
+      author: user?.name,
       title: "",
       creationDate: dayjs(),
       publicationDate: null,
@@ -65,12 +55,16 @@ export default function AddPageComponent() {
     if (user?.role !== "admin") return;
     setWaiting(true);
 
+    setPage(
+      (old) => new Page({ ...old, userId: user?.id, author: user?.name })
+    );
+
     API.getUsers()
       .then((value) => {
         setUsers(value);
       })
       .catch((err) => {
-        setUsers();
+        setUsers(null);
         setError(true);
       })
       .finally(() => {
@@ -99,17 +93,23 @@ export default function AddPageComponent() {
 
   return (
     <Container>
-      <PageFormComponent
-        waiting={waiting}
-        error={error}
-        users={users}
-        page={page}
-        setPage={setPage}
-        contents={contents}
-        setContents={setContents}
-        handleClose={handleClose}
-        handleSubmit={handleSubmit}
-      />
+      {user ? (
+        <PageFormComponent
+          waiting={waiting}
+          error={error}
+          users={users}
+          page={page}
+          setPage={setPage}
+          contents={contents}
+          setContents={setContents}
+          handleClose={handleClose}
+          handleSubmit={handleSubmit}
+        />
+      ) : (
+        <Alert variant="warning">
+          You need to be authenticated to access this page.
+        </Alert>
+      )}
     </Container>
   );
 }

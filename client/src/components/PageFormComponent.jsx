@@ -22,6 +22,8 @@ import API from "../API";
 import Page from "../models/page";
 import { DeleteButton, DownButton, UpButton } from "./ButtonComponent";
 import User from "../models/user";
+import * as yup from "yup";
+import { pageSchema } from "../validations/pageValidation";
 
 const defaultContent = (id) =>
   new Content({
@@ -158,6 +160,31 @@ export default function PageFormComponent({
     });
   };
 
+  const [validated, setValidated] = useState(false);
+
+  /**
+   *
+   * @param {React.FormEvent<HTMLFormElement>} event
+   */
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+
+    pageSchema
+      .validate({ ...page, contents })
+      .then((v) => {
+        handleSubmit(event);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.path);
+        console.log(err.message);
+        console.log(err.errors);
+      })
+      .finally(() => {
+        setValidated(true);
+      });
+  };
+
   return (
     <>
       {waiting ? (
@@ -197,7 +224,7 @@ export default function PageFormComponent({
       </ToastContainer>
 
       {/* Actual FORM implementation */}
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
         <PageInfoComponent>
           <PageAuthor users={users} page={page} setPage={setPage} />
           <Form.Group>

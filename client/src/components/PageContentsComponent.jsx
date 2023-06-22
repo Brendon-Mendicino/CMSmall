@@ -33,10 +33,6 @@ export default function PageContentsComponent({}) {
   const pageId = Number(useParams().pageId);
 
   const modifyPage = user && (user?.id === page?.userId || user?.role === "admin");
-  console.log(modifyPage);
-
-  /* Go back if pageId is not valid */
-  if (isNaN(pageId)) return <Navigate to={"/pages"} />;
 
   useEffect(() => {
     setWaiting(true);
@@ -63,6 +59,9 @@ export default function PageContentsComponent({}) {
         contents: contents.map((c) => c.serialize()),
       },
     });
+
+  /* Go back if pageId is not valid */
+  if (isNaN(pageId)) return <Navigate to={"/pages"} />;
 
   return (
     <>
