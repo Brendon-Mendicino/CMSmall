@@ -187,7 +187,7 @@ router.delete("/api/login", async (req, res) => {
   req.logout((err) => {
     if (err) return res.status(400).json(err);
 
-    return res.status(200).json();
+    return res.status(204).json();
   });
 });
 
