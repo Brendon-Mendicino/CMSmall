@@ -3,17 +3,14 @@ import { useAuth } from "../contexts/AuthContext";
 import API from "../API";
 import {
   Alert,
-  Badge,
   Card,
   Container,
   ListGroup,
   ListGroupItem,
-  Row,
 } from "react-bootstrap";
 import { ContentListComponent } from "./ContentListComponent";
 import {
   Navigate,
-  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -32,7 +29,8 @@ export default function PageContentsComponent({}) {
   const navigate = useNavigate();
   const pageId = Number(useParams().pageId);
 
-  const modifyPage = user && (user?.id === page?.userId || user?.role === "admin");
+  const modifyPage =
+    user && (user?.id === page?.userId || user?.role === "admin");
 
   useEffect(() => {
     setWaiting(true);
@@ -72,6 +70,7 @@ export default function PageContentsComponent({}) {
         {error ? (
           <Alert variant="danger">There was an unexpected error.</Alert>
         ) : null}
+
         <PageInfoComponent
           page={page}
           footer={

@@ -1,7 +1,7 @@
-import { Container } from "react-bootstrap";
+import { Alert, Container } from "react-bootstrap";
 import PageFormComponent from "./PageFormComponent";
 import { useAuth } from "../contexts/AuthContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Content from "../models/content";
 import Page from "../models/page";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ export default function UpdatePageComponent() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const pageId = useParams().pageId;
 
   const statePage = location.state?.page
     ? Page.deserialize(location.state.page)
@@ -29,16 +30,35 @@ export default function UpdatePageComponent() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (user?.role !== "admin") return;
-
     setWaiting(true);
+    setError(false);
 
-    API.getUsers()
-      .then((value) => {
-        setUsers(value);
-      })
+    const promises = Promise.all([
+      API.getPage(pageId)
+        .then((page) => setPage(page))
+        .catch((err) => {
+          setPage(null);
+          return Promise.reject(err);
+        }),
+      API.getContents(pageId)
+        .then((contents) => setContents(contents))
+        .catch((err) => {
+          setContents(null);
+          return Promise.reject(err);
+        }),
+      user?.role !== "admin"
+        ? Promise.resolve()
+        : API.getUsers()
+            .then((users) => setUsers(users))
+            .catch((err) => {
+              setUsers(null);
+              return Promise.reject(err);
+            }),
+    ]);
+
+    promises
       .catch((err) => {
-        setUsers(null);
+        console.log(err);
         setError(true);
       })
       .finally(() => {
@@ -67,6 +87,13 @@ export default function UpdatePageComponent() {
         setWaiting(false);
       });
   };
+
+  if (!page || !contents)
+    return (
+      <Container>
+        <Alert variant="danger">An unexpected error accurred.</Alert>
+      </Container>
+    );
 
   return (
     <Container>
