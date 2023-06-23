@@ -6,9 +6,13 @@
 
 ## React Client Application Routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
-- ...
+- Route `/`: redirects to `/pages`
+- Route `/login`: contains the login form, which allows authentication
+- Route `/pages`: contains the list of pages ordered chronologically, it only shows published pages for non-logged users
+- Route `/pages/add`: allows to compile a form to insert a new page with his contents
+- Route `/pages/:pageId/contents`: brings to a specific page identifed by `:pageId`, with the relative info and the list of contentents (relative to that `:pageId`)
+- Route `/pages/:pageId/edit`: allows to modify a page via a form (can be done only by the authro of the page or by an admin)
+- Route `/*`: any other non-intended route, contains the *404Page*
 
 ## API Server
 
@@ -62,12 +66,12 @@
   - request body: empty
   - response body: empty
   - response status:
-    - `204 OK`
+    - `204 No Content`
     - `401 Unauthorized` wasn't owner of the page nor an admin
     - `404 Not Found` page not found
     - `500 Internal Server Error`
 - GET `/api/pages/:pageId`
-  - description: get the list a single page, non-authenticated user will only receive "published" pages
+  - description: get a single page, non-authenticated users will only receive "published" pages
   - request body: empty
   - response body content
   ```json
@@ -83,7 +87,7 @@
   - repsonse status
     - `200 OK`
     - `401 Unauthorized` If non-authenticated user tried to access non-"published" page
-    - `404 Not Fount` Page not found
+    - `404 Not Found` Page not found
     - `500 Internal Server Error`
 - POST `/api/pages/:pageId`
   - description: update a page and his contents, only the owner of the page or an admin can perform this action
@@ -106,8 +110,9 @@
     ]
   }
   ```
+  - response body: empty
   - response status:
-    - `204 OK`
+    - `204 No Content`
     - `401 Unauthorized` wasn't owner of the page nor an admin
     - `404 Not Found` page not found
     - `500 Internal Server Error`
@@ -198,9 +203,9 @@
   ```
   - response status:
     - `201 Created`
-    -
+    - `400 Bad Request` wrong username or password
 - GET `/api/login`
-  - description: get if the user is logged in
+  - description: check if the current user is logged in
   - request body: empty
   - response body:
   ```json
@@ -214,13 +219,13 @@
   - response status:
     - `200 OK`: **if authenticated**
     - `404 Not Found`: **if not authenticated**
-    - `500 Server Interal Error`
+    - `500 Interal Server Error`
 - DELETE `/api/logout`
-  - description: logout the current user from the cookeis
+  - description: logout the current user from the server
   - request body: empty
   - response body: empy
   - response status:
-    - `200 OK`
+    - `204 No Content`
     - `400 Bad Request`
 - GET `/api/webpage/name`
   - description: get the name of the webpage
@@ -285,6 +290,9 @@
   | `id` | `email` | `name` | `role` | `hash` | `salt` |
   |-|-|-|-|-|-|
 
+  - `hash`: `password + salt` through cryptographic hash function, 32 bytes
+  - `salt`: random 8 bytes
+
 - Table `pages` - represent the pages created by the users
   | `id` | `userId` | `title` | `creationDate` | `publicationDate` |
   |-|-|-|-|-|
@@ -303,11 +311,21 @@
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
-- ...
-
-(only _main_ components, minor ones may be skipped)
+- `App` (in `App.jsx`): only contains the routes and the `AuthContext.Provider`
+- `AuthProvider` in (in `AuthContext.jsx`): contains the logged `User` state and a setter function for him, when invoked it contains a `useEffect` that fetches the logged user (if any) from the server
+- `LoginComponent` (in `LoginComponent.jsx`): contains a form with *username* and *password* to fill for the authentication
+- `PageComponent` (in `PageComponent.jsx`): fetched the pages from the server and displays them as a list, every item (`PageItem`) contains a `Link` to the the respective contents of the page, navigating to `/pages/:pageId/contents`
+- `NavbarComponent` (in `NavbarComponent.jsx`): contains the name of the page (fetched from the server), a button for login/logout, a dropdown menu with:
+  - a button to insert a new page
+  - a button to change the name of the website
+- `PageContentsComponent` (in `PageContentsComponent.jsx`): fetches the page (with `pageId` from params) and his relative contents from the server, then it displays them in a list of `Card`s, if the current `user` is the author of the page or is an admin, he can edit or delete the current page
+- `PageFormComponent` (in `PageComponent.jsx`): represent the structure of a `Page` and his `Content`s, it allows the modification of both of them, this is done by passing the state to his props, and when the submit button is clicked and the validation is done the `handleSubmit` callaback is invoked
+- `AddPageComponent` (in `AddPageComponent.jsx`): wraps around `PageFormComponent`, sets a new page with basic attributes: 
+  - current date
+  - author (current user)
+  - default contents
+  - a list of all users if current user is admin
+- `UpdatePageComponent` (in `UpdatePageComponent.jsx`): wraps around `PageFormComponent`, behaves like `AddPageComponent`, but instead of passing defaults page and components they are in a first moment taken from the `location` and then fetched from the server
 
 ## Screenshot
 
