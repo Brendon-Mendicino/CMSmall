@@ -266,6 +266,7 @@ export default function PageFormComponent({
             />
           </Form.Group>
         </PageInfoComponent>
+        <h2>Page contents</h2>
         {contents.map((c, index) => (
           <Form.Group key={c.id}>
             <PageContentComponent>
