@@ -1,6 +1,15 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/8AapHqUJ)
 
-# Exam #N: "Exam Title"
+# Exam #1: "CMSmall"
+
+- [Exam #1: "CMSmall"](#exam-1-cmsmall)
+  - [Student: s317639 MENDICINO BRENDON](#student-s317639-mendicino-brendon)
+  - [React Client Application Routes](#react-client-application-routes)
+  - [API Server](#api-server)
+  - [Database Tables](#database-tables)
+  - [Main React Components](#main-react-components)
+  - [Screenshot](#screenshot)
+  - [Users Credentials](#users-credentials)
 
 ## Student: s317639 MENDICINO BRENDON
 
