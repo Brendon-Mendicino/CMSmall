@@ -319,6 +319,7 @@
   - a button to insert a new page
   - a button to change the name of the website
 - `PageContentsComponent` (in `PageContentsComponent.jsx`): fetches the page (with `pageId` from params) and his relative contents from the server, then it displays them in a list of `Card`s. If the current `user` is the author of the page or is an admin, he can edit or delete the current page
+- `ContentListComponent` (in `ContentListComponent.jsx`): represent the actual list of contentes of a page, displaying conditionally different types of blocks
 - `PageFormComponent` (in `PageComponent.jsx`): represent the structure of a `Page` and his `Content`s, it allows the modification of both of them. This is done by passing the state to his props, and when the submit button is clicked and the validation is correct the `handleSubmit` callaback is invoked
 - `AddPageComponent` (in `AddPageComponent.jsx`): wraps around `PageFormComponent`, sets a new page state with basic attributes: 
   - current date
