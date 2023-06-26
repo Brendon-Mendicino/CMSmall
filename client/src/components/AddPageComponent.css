@@ -1,0 +1,15 @@
+.tooltip-inner, .img-tooltip {
+    max-width: none;
+}
+
+.page-container {
+    margin: 2rem auto;
+}
+
+.page-container button {
+    margin: 0.3rem;
+}
+
+.page-form-btn-container > * {
+    margin: 1rem;
+}

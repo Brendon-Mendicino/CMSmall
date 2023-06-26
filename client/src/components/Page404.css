@@ -1,0 +1,46 @@
+@keyframes spinning {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .airplane-container {
+    animation: spinning infinite 5s linear;
+  }
+}
+
+.airplane-container {
+  max-height: 50px;
+  z-index: -1;
+}
+
+@keyframes leftright {
+  from {
+    margin-left: 110%;
+  }
+  to {
+    margin-left: -10%;
+  }
+}
+
+@keyframes step-ratation {
+  0% { 
+    transform: rotate(180deg);
+  }
+  50% { 
+    transform: rotate(0deg);
+  }
+}
+
+.moving {
+  position: absolute;
+  animation: leftright infinite 4s alternate-reverse;
+}
+
+.step-rotate {
+  animation: step-ratation infinite 8s steps(1);
+}

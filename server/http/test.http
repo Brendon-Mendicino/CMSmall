@@ -1,0 +1,24 @@
+GET http://localhost:3001/api/pages
+
+###
+
+GET http://localhost:3001/api/pages/1/contents
+
+###
+
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{ "username": "bre@bre.it", "password": "test"}
+
+
+###
+
+DELETE  http://localhost:3001/api/login
+
+###
+
+PUT http://localhost:3001/api/register
+Content-Type: application/json
+
+{ "email": "boh@boh.xyz", "role": "admin", "password": "supersecret", "name": "Mendicino" }
